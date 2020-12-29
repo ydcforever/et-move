@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Move</title>
+</head>
+<body>
+<table id="job"></table>
+<script type="text/javascript" src="./js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="./js/layout.js"></script>
+<script type="text/javascript">
+    $(function () {
+        let queryExample = [
+            {
+                row: [
+                    {
+                        title:"ACCA_SAL_DP_D"
+                    },{
+                        type : "button",
+                        field : "dp_d_start",
+                        value : "开启"
+                    }, {
+                        type : "text",
+                        field : "dp_d_cron",
+                        initData:"0/5 * * * * ?",
+                        classify: "start"
+                    }, {
+                        type : "button",
+                        field : "dp_d_stop",
+                        value : "停止",
+                        classify: "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title:"ACCA_SAL_IP_D"
+                    }, {
+                        type : "button",
+                        field : "ip_d_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "ip_d_cron"
+                    }, {
+                        type : "button",
+                        field : "ip_d_stop",
+                        value : "停止",
+                        classify: "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_SAL_DP_M"
+                    }, {
+                        type : "button",
+                        field : "dp_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "dp_m_cron"
+                    }, {
+                        type : "button",
+                        field : "dp_m_stop",
+                        value : "停止",
+                        classify: "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_SAL_IP_M"
+                    }, {
+                        type : "button",
+                        field : "ip_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "ip_m_cron"
+                    }, {
+                        type : "button",
+                        field : "ip_m_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "Refund"
+                    }, {
+                        type : "button",
+                        field : "ref_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "ref_cron"
+                    }, {
+                        type : "button",
+                        field : "ref_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_UPL_DP_M"
+                    }, {
+                        type : "button",
+                        field : "upl_dp_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "upl_dp_m_cron"
+                    }, {
+                        type : "button",
+                        field : "upl_dp_m_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_UPL_IP_M"
+                    }, {
+                        type : "button",
+                        field : "upl_ip_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "upl_ip_m_cron"
+                    }, {
+                        type : "button",
+                        field : "upl_ip_m_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_UPL_DP_D"
+                    }, {
+                        type : "button",
+                        field : "upl_dp_d_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "upl_dp_d_cron"
+                    }, {
+                        type : "button",
+                        field : "upl_dp_d_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_UPL_IP_D"
+                    }, {
+                        type : "button",
+                        field : "upl_ip_d_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "upl_ip_d_cron"
+                    }, {
+                        type : "button",
+                        field : "upl_ip_d_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }
+        ];
+        loadLayout($("#job"), queryExample, "acca");
+
+        job($("#ip_m_start"), $("#ip_m_stop"), "ACCA_SAL_IP_M", $("#ip_m_cron"));
+        job($("#dp_m_start"), $("#dp_m_stop"), "ACCA_SAL_DP_M", $("#dp_m_cron"));
+        job($("#ip_d_start"), $("#ip_d_stop"), "ACCA_SAL_IP_D", $("#ip_d_cron"));
+        job($("#dp_d_start"), $("#dp_d_stop"), "ACCA_SAL_DP_D", $("#dp_d_cron"));
+        job($("#ref_start"), $("#ref_stop"), "Refund", $("#ref_cron"));
+
+        job($("#upl_dp_m_start"), $("#upl_dp_m_stop"), "ACCA_UPL_DP_M", $("#upl_dp_m_cron"));
+        job($("#upl_ip_m_start"), $("#upl_ip_m_stop"), "ACCA_UPL_IP_M", $("#upl_ip_m_cron"));
+        job($("#upl_dp_d_start"), $("#upl_dp_d_stop"), "ACCA_UPL_DP_D", $("#upl_dp_d_cron"));
+        job($("#upl_ip_d_start"), $("#upl_ip_d_stop"), "ACCA_UPL_IP_D", $("#upl_ip_d_cron"));
+
+        function job($start, $stop, id, $cron) {
+            $start.click(function () {
+                let cron = $cron.val();
+                if (cron == null || cron == "") {
+                    $.ajax({
+                        type: "POST",
+                        url: './job/start.do',
+                        data : {id : id},
+                        success: function () {
+                            alert(id + "开启定时")
+                        },
+                        error: function () {
+
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: './job/modify.do',
+                        data : {id : id, cron : cron},
+                        success: function () {
+                            alert(id + "开启定时");
+                        },
+                        error: function () {
+
+                        }
+                    });
+                }
+            });
+
+            $stop.click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: './job/stop.do',
+                    data : {id : id},
+                    success: function () {
+                        alert(id + "定时停止");
+                    },
+                    error: function () {
+
+                    }
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

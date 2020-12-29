@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.TaxDiMapper">
+    <resultMap type="com.airline.account.model.acca.TaxDp" id="TaxDp">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="AIRLINE_3CODE" property="airline3code" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
+        <result column="SALE_TYPE" property="saleType" jdbcType="VARCHAR"/>
+        <result column="CURRENCY" property="currency" jdbcType="VARCHAR"/>
+        <result column="TAX_TYPE" property="taxType" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT1_CNY" property="taxAmount1Cny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT1" property="taxAmount1" jdbcType="DECIMAL"/>
+        <result column="TAX_TYPE2" property="taxType2" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT2_CNY" property="taxAmount2Cny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT2" property="taxAmount2" jdbcType="DECIMAL"/>
+        <result column="TAX_TYPE3" property="taxType3" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT3_CNY" property="taxAmount3Cny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT3" property="taxAmount3" jdbcType="DECIMAL"/>
+        <result column="TAX_TYPE4" property="taxType4" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT4_CNY" property="taxAmount4Cny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT4" property="taxAmount4" jdbcType="DECIMAL"/>
+        <result column="TAX_TYPE5" property="taxType5" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT5_CNY" property="taxAmount5Cny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT5" property="taxAmount5" jdbcType="DECIMAL"/>
+        <!--<result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>-->
+    </resultMap>
+
+    <resultMap type="com.airline.account.model.acca.TaxIp" id="TaxIp">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="AIRLINE_3CODE" property="airline3code" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
+        <result column="SALE_TYPE" property="saleType" jdbcType="VARCHAR"/>
+        <result column="CURRENCY" property="currency" jdbcType="VARCHAR"/>
+        <result column="TAX_TYPE" property="taxType" jdbcType="VARCHAR"/>
+        <result column="TAX_AMOUNT_CNY" property="taxAmountCny" jdbcType="DECIMAL"/>
+        <result column="TAX_AMOUNT" property="taxAmount" jdbcType="DECIMAL"/>
+        <!--<result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>-->
+    </resultMap>
+
+
+    <sql id="showTaxDpCol">
+        DATA_TYPE,OUTPUT_SYS,BAL_MONTH,BAL_PERIOD,AIRLINE_3CODE,TICKET_NO,
+        SALE_TYPE,CURRENCY,TAX_TYPE,TAX_AMOUNT1_CNY,TAX_AMOUNT1,TAX_TYPE2,
+        TAX_AMOUNT2_CNY,TAX_AMOUNT2,TAX_TYPE3,TAX_AMOUNT3_CNY,TAX_AMOUNT3,
+        TAX_TYPE4,TAX_AMOUNT4_CNY,TAX_AMOUNT4,TAX_TYPE5,TAX_AMOUNT5_CNY,
+        TAX_AMOUNT5
+    </sql>
+
+    <sql id="showTaxIpCol">
+        DATA_TYPE,OUTPUT_SYS,BAL_MONTH,BAL_PERIOD,AIRLINE_3CODE,TICKET_NO,
+        SALE_TYPE,CURRENCY,TAX_TYPE,TAX_AMOUNT_CNY,TAX_AMOUNT
+    </sql>
+
+    <sql id="cnjClause">
+        t.airline_3code = #{airline3code}
+        and t.ticket_no = #{ticketNo}
+    </sql>
+
+    <select id="queryDdpTax" resultMap="TaxDp" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showTaxDpCol"/>
+        FROM acca_tax_dp_d t
+        where <include refid="cnjClause"/>
+    </select>
+
+    <select id="queryMdpTax" resultMap="TaxDp" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showTaxDpCol"/>
+        FROM acca_tax_dp_m t
+        where <include refid="cnjClause"/>
+    </select>
+
+    <select id="queryDipTax" resultMap="TaxIp" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showTaxIpCol"/>
+        FROM acca_tax_ip_d t
+        where <include refid="cnjClause"/>
+    </select>
+
+    <select id="queryMipTax" resultMap="TaxIp" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showTaxIpCol"/>
+        FROM acca_tax_ip_m t
+        where <include refid="cnjClause"/>
+    </select>
+
+</mapper>

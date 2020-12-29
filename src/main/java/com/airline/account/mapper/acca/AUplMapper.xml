@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.AUplMapper">
+    <resultMap type="com.airline.account.model.acca.AUpl" id="AUpl">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="AIRLINE_3CODE" property="airline3code" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
+        <result column="COUPON_NO" property="couponNo" jdbcType="DECIMAL"/>
+        <result column="TICKET_TYPE" property="ticketType" jdbcType="VARCHAR"/>
+        <result column="TICKET_DATE" property="ticketDate" jdbcType="VARCHAR"/>
+        <result column="AGENT_CODE" property="agentCode" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_TYPE" property="flightType" jdbcType="VARCHAR"/>
+        <result column="CARRIER_O" property="carrierO" jdbcType="VARCHAR"/>
+        <result column="SUB_CARRIER" property="subCarrier" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_ROUNTE_CD" property="flightRounteCd" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_ROUTE_TYPE" property="flightRouteType" jdbcType="VARCHAR"/>
+        <result column="ROUND_TYPE" property="roundType" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO" property="flightNo" jdbcType="VARCHAR"/>
+        <result column="CARRIER_DATE" property="carrierDate" jdbcType="VARCHAR"/>
+        <result column="TAIL_NBR" property="tailNbr" jdbcType="VARCHAR"/>
+        <result column="DEPT_AIRPORT" property="deptAirport" jdbcType="VARCHAR"/>
+        <result column="ARR_AIRPORT" property="arrAirport" jdbcType="VARCHAR"/>
+        <result column="MAIN_CLASS" property="mainClass" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS" property="subClass" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS" property="fareBasis" jdbcType="VARCHAR"/>
+        <result column="SALE_CURRENCY" property="saleCurrency" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR"/>
+        <result column="KEY_ACCOUNT" property="keyAccount" jdbcType="VARCHAR"/>
+        <result column="ET_FLAG" property="etFlag" jdbcType="VARCHAR"/>
+        <result column="FFP_MEMBER_NO" property="ffpMemberNo" jdbcType="VARCHAR"/>
+        <result column="TOUR_CODE" property="tourCode" jdbcType="VARCHAR"/>
+        <result column="CHARTERE_FLAG" property="chartereFlag" jdbcType="VARCHAR"/>
+        <result column="PAX_TYPE" property="paxType" jdbcType="VARCHAR"/>
+        <result column="PAX_QTY" property="paxQty" jdbcType="DECIMAL"/>
+        <result column="LUGGAGE_HEIGHT" property="luggageHeight" jdbcType="DECIMAL"/>
+        <result column="GROSS_INCOME" property="grossIncome" jdbcType="DECIMAL"/>
+        <result column="GROSS_INCOME_SC" property="grossIncomeSc" jdbcType="DECIMAL"/>
+        <result column="NET_INCOME" property="netIncome" jdbcType="DECIMAL"/>
+        <result column="NET_INCOME_SC" property="netIncomeSc" jdbcType="DECIMAL"/>
+        <result column="AGENT_COMMISSION_RATE" property="agentCommissionRate" jdbcType="DECIMAL"/>
+        <result column="AGENT_COMMISSION" property="agentCommission" jdbcType="DECIMAL"/>
+        <result column="AGENT_COMMISSION_SC" property="agentCommissionSc" jdbcType="DECIMAL"/>
+        <result column="ADDED_COMMISSION" property="addedCommission" jdbcType="DECIMAL"/>
+        <result column="ADDED_COMMISSION_SC" property="addedCommissionSc" jdbcType="DECIMAL"/>
+        <result column="BGG_PRICED_FEE" property="bggPricedFee" jdbcType="DECIMAL"/>
+        <result column="BGG_PRICED_FEE_SC" property="bggPricedFeeSc" jdbcType="DECIMAL"/>
+        <result column="AIRPORT_TAX" property="airportTax" jdbcType="DECIMAL"/>
+        <result column="AIRPORT_TAX_SC" property="airportTaxSc" jdbcType="DECIMAL"/>
+        <result column="FUEL_SURCHARGE" property="fuelSurcharge" jdbcType="DECIMAL"/>
+        <result column="FUEL_SURCHARGE_SC" property="fuelSurchargeSc" jdbcType="DECIMAL"/>
+        <result column="AVIATION_INSURANCE" property="aviationInsurance" jdbcType="DECIMAL"/>
+        <result column="AVIATION_INSURANCE_SC" property="aviationInsuranceSc" jdbcType="DECIMAL"/>
+        <result column="SPA_ID" property="spaId" jdbcType="VARCHAR"/>
+        <result column="MKT_CARRIER_CODE" property="mktCarrierCode" jdbcType="VARCHAR"/>
+        <result column="MKT_FLIGHT_NO" property="mktFlightNo" jdbcType="VARCHAR"/>
+        <result column="EMD_TYPE" property="emdType" jdbcType="VARCHAR"/>
+        <result column="EMD_REASON_CODE" property="emdReasonCode" jdbcType="VARCHAR"/>
+        <result column="EMD_SUB_REASON_CODE" property="emdSubReasonCode" jdbcType="VARCHAR"/>
+        <result column="NET_NET_INCOME_CNY" property="netNetIncomeCny" jdbcType="DECIMAL"/>
+        <result column="NET_NET_INCOME_USD" property="netNetIncomeUsd" jdbcType="DECIMAL"/>
+        <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="whereClause">
+        where t.airline_3code = #{cxr}
+        and t.ticket_no = #{doc}
+    </sql>
+
+    <select id="queryDDpUpl" resultMap="AUpl">
+        select <include refid="showCol"/>
+        from ACCA_UPL_DP_D t
+        <include refid="whereClause"/>
+    </select>
+
+    <select id="queryDIpUpl" resultMap="AUpl">
+        select <include refid="showCol"/>
+        from ACCA_UPL_IP_D t
+        <include refid="whereClause"/>
+    </select>
+
+    <select id="queryMDpUpl" resultMap="AUpl">
+        select <include refid="showCol"/>
+        from ACCA_UPL_DP_M t
+        <include refid="whereClause"/>
+    </select>
+
+    <select id="queryMIpUpl" resultMap="AUpl">
+        select <include refid="showCol"/>
+        from ACCA_UPL_IP_M t
+        <include refid="whereClause"/>
+    </select>
+
+    <sql id="showCol">
+        DATA_TYPE,OUTPUT_SYS,BAL_MONTH,BAL_PERIOD,AIRLINE_3CODE,TICKET_NO,COUPON_NO,TICKET_TYPE,TICKET_DATE,AGENT_CODE,
+        FLIGHT_TYPE,CARRIER_O,SUB_CARRIER,FLIGHT_ROUNTE_CD,FLIGHT_ROUTE_TYPE,ROUND_TYPE,FLIGHT_NO,CARRIER_DATE,TAIL_NBR,
+        DEPT_AIRPORT,ARR_AIRPORT,MAIN_CLASS,SUB_CLASS,FARE_BASIS,SALE_CURRENCY,PRODUCT_CODE,KEY_ACCOUNT,ET_FLAG,
+        FFP_MEMBER_NO,TOUR_CODE,CHARTERE_FLAG,PAX_TYPE,PAX_QTY,LUGGAGE_HEIGHT,GROSS_INCOME,GROSS_INCOME_SC,NET_INCOME,
+        NET_INCOME_SC,AGENT_COMMISSION_RATE,AGENT_COMMISSION,AGENT_COMMISSION_SC,ADDED_COMMISSION,ADDED_COMMISSION_SC,
+        BGG_PRICED_FEE,BGG_PRICED_FEE_SC,AIRPORT_TAX,AIRPORT_TAX_SC,FUEL_SURCHARGE,FUEL_SURCHARGE_SC,AVIATION_INSURANCE,
+        AVIATION_INSURANCE_SC,SPA_ID,MKT_CARRIER_CODE,MKT_FLIGHT_NO,EMD_TYPE,EMD_REASON_CODE,EMD_SUB_REASON_CODE,
+        NET_NET_INCOME_CNY,NET_NET_INCOME_USD,SOURCE_NAME
+    </sql>
+</mapper>

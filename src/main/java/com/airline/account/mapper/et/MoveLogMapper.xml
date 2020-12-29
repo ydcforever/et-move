@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.et.MoveLogMapper">
+    <resultMap type="com.airline.account.model.et.MoveLog" id="MoveLog">
+        <result column="AIRLINE_CODE" property="airlineCode" jdbcType="VARCHAR"/>
+        <result column="FIRST_TICKET_NO" property="firstTicketNo" jdbcType="VARCHAR"/>
+        <result column="EXCP" property="excp" jdbcType="VARCHAR"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertLog">
+        insert into ET_MOVE_ERROR
+        (
+        AIRLINE_CODE,
+        FIRST_TICKET_NO,
+        EXCP,
+        CREATE_TIME
+        )
+        values
+        (
+        #{airlineCode, jdbcType=VARCHAR},
+        #{firstTicketNo, jdbcType=VARCHAR},
+        #{excp, jdbcType=VARCHAR},
+        #{createTime, jdbcType=VARCHAR}
+        )
+    </insert>
+</mapper>

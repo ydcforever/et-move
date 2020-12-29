@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.SalMapper">
+    <resultMap type="com.airline.account.model.acca.Sal" id="Sal">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="AIRLINE_3CODE" property="airline3code" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
+        <result column="FINANCIAL_NO" property="financialNo" jdbcType="VARCHAR"/>
+        <result column="COUPON_USE_INDICATOR" property="couponUseIndicator" jdbcType="VARCHAR"/>
+        <result column="FIRST_TICKET_NO" property="firstTicketNo" jdbcType="VARCHAR"/>
+        <result column="CNJ_NO" property="cnjNo" jdbcType="DECIMAL"/>
+        <result column="SALE_TYPE" property="saleType" jdbcType="VARCHAR"/>
+        <result column="TICKET_TYPE" property="ticketType" jdbcType="VARCHAR"/>
+        <result column="ISSUE_DATE" property="issueDate" jdbcType="VARCHAR"/>
+        <result column="AGENT_NO" property="agentNo" jdbcType="VARCHAR"/>
+        <result column="AIRPORT1" property="airport1" jdbcType="VARCHAR"/>
+        <result column="AIRPORT2" property="airport2" jdbcType="VARCHAR"/>
+        <result column="AIRPORT3" property="airport3" jdbcType="VARCHAR"/>
+        <result column="AIRPORT4" property="airport4" jdbcType="VARCHAR"/>
+        <result column="AIRPORT5" property="airport5" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO1" property="flightNo1" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO2" property="flightNo2" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO3" property="flightNo3" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO4" property="flightNo4" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DT_1" property="flightDt1" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DT_2" property="flightDt2" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DT_3" property="flightDt3" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DT_4" property="flightDt4" jdbcType="VARCHAR"/>
+        <result column="CARRIER_1" property="carrier1" jdbcType="VARCHAR"/>
+        <result column="CARRIER_2" property="carrier2" jdbcType="VARCHAR"/>
+        <result column="CARRIER_3" property="carrier3" jdbcType="VARCHAR"/>
+        <result column="CARRIER_4" property="carrier4" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS_1" property="subClass1" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS_2" property="subClass2" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS_3" property="subClass3" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS_4" property="subClass4" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS_1" property="fareBasis1" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS_2" property="fareBasis2" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS_3" property="fareBasis3" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS_4" property="fareBasis4" jdbcType="VARCHAR"/>
+        <result column="ENDORSEMENT_RESTRICTION" property="endorsementRestriction" jdbcType="VARCHAR"/>
+        <result column="FCA" property="fca" jdbcType="VARCHAR"/>
+        <result column="PNR_NO" property="pnrNo" jdbcType="VARCHAR"/>
+        <result column="TOUR_CODE" property="tourCode" jdbcType="VARCHAR"/>
+        <result column="KEY_ACCOUNT" property="keyAccount" jdbcType="VARCHAR"/>
+        <result column="ET_FLAG" property="etFlag" jdbcType="VARCHAR"/>
+        <result column="PAX_NAME" property="paxName" jdbcType="VARCHAR"/>
+        <result column="PAX_TYPE" property="paxType" jdbcType="VARCHAR"/>
+        <result column="SALE_CURRENCY" property="saleCurrency" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAY_TYPE" property="incomePayType" jdbcType="VARCHAR"/>
+        <result column="PAX_QTY" property="paxQty" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAY" property="incomePay" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAY_SC" property="incomePaySc" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAX" property="incomePax" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAX_SC" property="incomePaxSc" jdbcType="VARCHAR"/>
+        <result column="TAX" property="tax" jdbcType="VARCHAR"/>
+        <result column="TAX_SC" property="taxSc" jdbcType="VARCHAR"/>
+        <result column="AGENT_COMMISSION_RATE" property="agentCommissionRate" jdbcType="VARCHAR"/>
+        <result column="AGENT_COMMISSION" property="agentCommission" jdbcType="VARCHAR"/>
+        <result column="AGENT_COMMISSION_SC" property="agentCommissionSc" jdbcType="VARCHAR"/>
+        <result column="ADD_COMMISSION_RATE" property="addCommissionRate" jdbcType="VARCHAR"/>
+        <result column="ADD_COMMISSION" property="addCommission" jdbcType="VARCHAR"/>
+        <result column="ADD_COMMISSION_SC" property="addCommissionSc" jdbcType="VARCHAR"/>
+        <result column="OVERWEIGHT_LUGGAGE" property="overweightLuggage" jdbcType="VARCHAR"/>
+        <result column="OVER_LUGGAGE_PRICE" property="overLuggagePrice" jdbcType="VARCHAR"/>
+        <result column="OVER_LUGGAGE_FEE" property="overLuggageFee" jdbcType="VARCHAR"/>
+        <result column="VALUABLE_FEE_FEE" property="valuableFeeFee" jdbcType="VARCHAR"/>
+        <result column="VALUABLE_FEE_SC" property="valuableFeeSc" jdbcType="VARCHAR"/>
+        <result column="EXCH_ORIGIN_AIRLINE" property="exchOriginAirline" jdbcType="VARCHAR"/>
+        <result column="EXCH_ORIGIN_TICKET_NO" property="exchOriginTicketNo" jdbcType="VARCHAR"/>
+        <result column="EXCH_ORIGIN_CNJ_NO" property="exchOriginCnjNo" jdbcType="VARCHAR"/>
+        <result column="RFND_AIRLINE" property="rfndAirline" jdbcType="VARCHAR"/>
+        <result column="RFND_TYPE" property="rfndType" jdbcType="VARCHAR"/>
+        <result column="RFND_DOCUMENT_NO" property="rfndDocumentNo" jdbcType="VARCHAR"/>
+        <result column="DATA_SOURCE" property="dataSource" jdbcType="VARCHAR"/>
+        <result column="SRC_AGENT_NO" property="srcAgentNo" jdbcType="VARCHAR"/>
+        <result column="CREDIT_CARD_NO" property="creditCardNo" jdbcType="VARCHAR"/>
+        <result column="GP_FLAG" property="gpFlag" jdbcType="VARCHAR"/>
+        <result column="AUTO_TICKET_FLAG" property="autoTicketFlag" jdbcType="VARCHAR"/>
+        <result column="BATCH_NO" property="batchNo" jdbcType="VARCHAR"/>
+        <result column="SALE_CITY" property="saleCity" jdbcType="VARCHAR"/>
+        <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="showCol">
+          DATA_TYPE,OUTPUT_SYS,BAL_MONTH,BAL_PERIOD,AIRLINE_3CODE,
+          TICKET_NO,FINANCIAL_NO,COUPON_USE_INDICATOR,FIRST_TICKET_NO,CNJ_NO,
+          SALE_TYPE,TICKET_TYPE,ISSUE_DATE,AGENT_NO,AIRPORT1,AIRPORT2,AIRPORT3,AIRPORT4,
+          AIRPORT5,FLIGHT_NO1,FLIGHT_NO2,FLIGHT_NO3,FLIGHT_NO4,FLIGHT_DT_1,FLIGHT_DT_2,
+          FLIGHT_DT_3,FLIGHT_DT_4,CARRIER_1,CARRIER_2,CARRIER_3,CARRIER_4,SUB_CLASS_1,SUB_CLASS_2,
+          SUB_CLASS_3,SUB_CLASS_4,FARE_BASIS_1,FARE_BASIS_2,FARE_BASIS_3,FARE_BASIS_4,
+          ENDORSEMENT_RESTRICTION,FCA,PNR_NO,TOUR_CODE,KEY_ACCOUNT,ET_FLAG,PAX_NAME,PAX_TYPE,SALE_CURRENCY,
+          INCOME_PAY_TYPE,PAX_QTY,INCOME_PAY,INCOME_PAY_SC,INCOME_PAX,INCOME_PAX_SC,TAX,TAX_SC,
+          AGENT_COMMISSION_RATE,AGENT_COMMISSION,AGENT_COMMISSION_SC,ADD_COMMISSION_RATE,ADD_COMMISSION,
+          ADD_COMMISSION_SC,OVERWEIGHT_LUGGAGE,OVER_LUGGAGE_PRICE,OVER_LUGGAGE_FEE,VALUABLE_FEE_FEE,
+          VALUABLE_FEE_SC,EXCH_ORIGIN_AIRLINE,EXCH_ORIGIN_TICKET_NO,EXCH_ORIGIN_CNJ_NO,RFND_AIRLINE,
+          RFND_TYPE,RFND_DOCUMENT_NO,DATA_SOURCE,SRC_AGENT_NO,CREDIT_CARD_NO,GP_FLAG,
+          AUTO_TICKET_FLAG,BATCH_NO,SALE_CITY,SOURCE_NAME
+    </sql>
+
+    <sql id="firstTicketClause">
+             t.airline_3code = #{airline3code}
+         and t.first_ticket_no = #{ticketNo}
+    </sql>
+
+    <select id="queryDipSal" resultMap="Sal" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showCol"/>
+        FROM acca_sal_ip_d t
+        where
+        <include refid="firstTicketClause"/>
+    </select>
+
+    <select id="queryDdpSal" resultMap="Sal" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showCol"/>
+        FROM acca_sal_dp_d t
+        where
+        <include refid="firstTicketClause"/>
+    </select>
+
+    <select id="queryMipSal" resultMap="Sal" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showCol"/>
+        FROM acca_sal_ip_m t
+        where
+        <include refid="firstTicketClause"/>
+    </select>
+
+    <select id="queryMdpSal" resultMap="Sal" parameterType="com.airline.account.model.acca.Sal">
+        select
+        <include refid="showCol"/>
+        FROM acca_sal_dp_m t
+        where
+        <include refid="firstTicketClause"/>
+    </select>
+
+
+    <select id="queryPrimaryByAllocate" resultMap="Sal" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        SELECT
+        <include refid="showCol"/>
+        FROM ${tableName} t
+        WHERE t.source_name = #{fileName}
+        <if test="currentIssueDate != null">
+          and  t.issue_date = #{currentIssueDate}
+        </if>
+        and t.cnj_no = 1
+        order by t.issue_date, decode(t.sale_type, 'N', 1, 'E', 2, 3)
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countPrimaryByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        SELECT count(*)
+        FROM ${tableName} t
+        WHERE t.source_name = #{fileName}
+        <if test="currentIssueDate != null">
+          and  t.issue_date = #{currentIssueDate}
+        </if>
+        and t.cnj_no = 1
+    </select>
+
+
+    <sql id="OraclePagingPrefix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            select *
+            from ( select row_.*, rownum rownum_ from (
+        </if>
+    </sql>
+
+    <sql id="OraclePagingSuffix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            <![CDATA[ ) row_ ) where rownum_ > (#{page} - 1) * #{pageSize} and rownum_ <= #{page} * #{pageSize}]]>
+        </if>
+    </sql>
+</mapper>
