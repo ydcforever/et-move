@@ -174,6 +174,24 @@
                         value : "停止",
                         classify : "stop"
                     }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_REF_DP_M"
+                    }, {
+                        type : "button",
+                        field : "ref_dp_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "ref_dp_m_cron"
+                    }, {
+                        type : "button",
+                        field : "ref_dp_m_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
             }
         ];
         loadLayout($("#job"), queryExample, "acca");
@@ -188,6 +206,8 @@
         job($("#upl_ip_m_start"), $("#upl_ip_m_stop"), "ACCA_UPL_IP_M", $("#upl_ip_m_cron"));
         job($("#upl_dp_d_start"), $("#upl_dp_d_stop"), "ACCA_UPL_DP_D", $("#upl_dp_d_cron"));
         job($("#upl_ip_d_start"), $("#upl_ip_d_stop"), "ACCA_UPL_IP_D", $("#upl_ip_d_cron"));
+
+        job($("#ref_dp_m_start"), $("#ref_dp_m_stop"), "ACCA_REF_DP_M", $("#ref_dp_m_cron"));
 
         function job($start, $stop, id, $cron) {
             $start.click(function () {

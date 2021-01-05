@@ -76,6 +76,8 @@ public class Segment {
 
     private String asrSeat;
 
+    private String optCarrier;
+
     public Segment(String documentCarrierIataNo, String documentNo, Integer couponNo) {
         this.documentCarrierIataNo = documentCarrierIataNo;
         this.documentNo = documentNo;

@@ -1,8 +1,6 @@
 package com.airline.account.mapper.acca;
 
-import com.airline.account.model.acca.AUpl;
-import com.airline.account.model.acca.Relation;
-import com.airline.account.model.acca.Sal;
+import com.airline.account.model.acca.*;
 import com.airline.account.utils.AllocateSource;
 import org.springframework.stereotype.Repository;
 
@@ -55,4 +53,23 @@ public interface RelationMapper {
      * @return total of current day in this upl file
      */
     Integer countUplByAllocate(AllocateSource allocateSource);
+
+
+
+
+    /**
+     * 查询ACCA国内改签
+     *
+     * @param allocateSource  资源分配
+     * @return list of rfd dp
+     */
+    List<RfdDp> queryRfdDpByAllocate(AllocateSource allocateSource);
+
+    /**
+     * 国内改签资源分配总数
+     *
+     * @param allocateSource
+     * @return total of current day in this rfd dp file
+     */
+    Integer countRfdDpByAllocate(AllocateSource allocateSource);
 }

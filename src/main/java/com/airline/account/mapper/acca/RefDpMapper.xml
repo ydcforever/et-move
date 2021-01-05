@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.RefDpMapper">
+    <resultMap type="com.airline.account.model.acca.RefDp" id="RefDp">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="REFUND_OWNER" property="refundOwner" jdbcType="VARCHAR"/>
+        <result column="REFUND_TYPE" property="refundType" jdbcType="VARCHAR"/>
+        <result column="REFUND_ORDER_NO" property="refundOrderNo" jdbcType="VARCHAR"/>
+        <result column="REFUND_OWNER_COMPANY" property="refundOwnerCompany" jdbcType="VARCHAR"/>
+        <result column="REFUND_TICKET_NO" property="refundTicketNo" jdbcType="VARCHAR"/>
+        <result column="REFUND_RELATION_NO" property="refundRelationNo" jdbcType="VARCHAR"/>
+        <result column="REFUND_DATE" property="refundDate" jdbcType="VARCHAR"/>
+        <result column="AGENT_NO" property="agentNo" jdbcType="VARCHAR"/>
+        <result column="SALE_CURRENCY" property="saleCurrency" jdbcType="VARCHAR"/>
+        <result column="INCOME_PAY" property="incomePay" jdbcType="DECIMAL"/>
+        <result column="INCOME_PAY_SC" property="incomePaySc" jdbcType="DECIMAL"/>
+        <result column="TAX" property="tax" jdbcType="DECIMAL"/>
+        <result column="TAX_SC" property="taxSc" jdbcType="DECIMAL"/>
+        <result column="REFUND_AMOUNT" property="refundAmount" jdbcType="DECIMAL"/>
+        <result column="REFUND_AMOUNT_SC" property="refundAmountSc" jdbcType="DECIMAL"/>
+        <result column="REFUND_FEE" property="refundFee" jdbcType="DECIMAL"/>
+        <result column="REFUND_FEE_SC" property="refundFeeSc" jdbcType="DECIMAL"/>
+        <result column="ADM_EXTRA_FEE" property="admExtraFee" jdbcType="DECIMAL"/>
+        <result column="ADM_EXTRA_FEE_SC" property="admExtraFeeSc" jdbcType="DECIMAL"/>
+        <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="col">
+            DATA_TYPE,
+            OUTPUT_SYS,
+            BAL_MONTH,
+            BAL_PERIOD,
+            REFUND_OWNER,
+            REFUND_TYPE,
+            REFUND_ORDER_NO,
+            REFUND_OWNER_COMPANY,
+            REFUND_TICKET_NO,
+            REFUND_RELATION_NO,
+            REFUND_DATE,
+            AGENT_NO,
+            SALE_CURRENCY,
+            INCOME_PAY,
+            INCOME_PAY_SC,
+            TAX,
+            TAX_SC,
+            REFUND_AMOUNT,
+            REFUND_AMOUNT_SC,
+            REFUND_FEE,
+            REFUND_FEE_SC,
+            ADM_EXTRA_FEE,
+            ADM_EXTRA_FEE_SC,
+            SOURCE_NAME
+    </sql>
+
+
+    <select id="queryRefDpByAllocate" resultMap="RefDp" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select REFUND_OWNER_COMPANY, REFUND_TICKET_NO, REFUND_RELATION_NO, REFUND_DATE
+        from ACCA_REF_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.REFUND_DATE = #{currentIssueDate}
+        </if>
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ACCA_REF_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.REFUND_DATE = #{currentIssueDate}
+        </if>
+    </select>
+
+    <sql id="OraclePagingPrefix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            select *
+            from ( select row_.*, rownum rownum_ from (
+        </if>
+    </sql>
+
+    <sql id="OraclePagingSuffix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            <![CDATA[ ) row_ ) where rownum_ > (#{page} - 1) * #{pageSize} and rownum_ <= #{page} * #{pageSize}]]>
+        </if>
+    </sql>
+</mapper>

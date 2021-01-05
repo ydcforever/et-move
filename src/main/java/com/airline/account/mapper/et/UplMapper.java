@@ -3,8 +3,6 @@ package com.airline.account.mapper.et;
 import com.airline.account.model.et.Upl;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  *
  * @author ydc
@@ -14,9 +12,15 @@ import java.util.List;
 public interface UplMapper {
 
     /**
-     * 承运数据插入
-     * @param list l
+     * 插入承运信息
+     * @param upl 承运
      */
-    void insertUpl(List<Upl> list);
+    void insertUpl(Upl upl);
 
+    /**
+     * 更新承运信息
+     *
+     * @param upl 承运
+     */
+    void updateUpl(Upl upl);
 }

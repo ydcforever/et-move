@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.RfdDpMapper">
+    <resultMap type="com.airline.account.model.acca.RfdDp" id="RfdDp">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="TRANSFER_TICKET_COMPANY" property="transferTicketCompany" jdbcType="VARCHAR"/>
+        <result column="TRANSFER_TICKET_NO" property="transferTicketNo" jdbcType="VARCHAR"/>
+        <result column="COUPON_NO" property="couponNo" jdbcType="DECIMAL"/>
+        <result column="AGENT_NO" property="agentNo" jdbcType="VARCHAR"/>
+        <result column="TICKET_TYPE" property="ticketType" jdbcType="VARCHAR"/>
+        <result column="SALE_TYPE" property="saleType" jdbcType="VARCHAR"/>
+        <result column="TRANSFER_NEW_TICKET_COMPANY" property="transferNewTicketCompany" jdbcType="VARCHAR"/>
+        <result column="TRANSFER_NEW_TICKET_NO" property="transferNewTicketNo" jdbcType="VARCHAR"/>
+        <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="col">
+        DATA_TYPE,
+        OUTPUT_SYS,
+        BAL_MONTH,
+        BAL_PERIOD,
+        TRANSFER_TICKET_COMPANY,
+        TRANSFER_TICKET_NO,
+        COUPON_NO,
+        AGENT_NO,
+        TICKET_TYPE,
+        SALE_TYPE,
+        TRANSFER_NEW_TICKET_COMPANY,
+        TRANSFER_NEW_TICKET_NO,
+        SOURCE_NAME
+    </sql>
+
+    <select id="queryRefDpByAllocate" resultMap="RfdDp" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select TRANSFER_TICKET_COMPANY, TRANSFER_TICKET_NO, COUPON_NO, TRANSFER_NEW_TICKET_COMPANY, TRANSFER_NEW_TICKET_NO
+        from ACCA_RFD_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ACCA_RFD_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+    </select>
+
+    <sql id="OraclePagingPrefix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            select *
+            from ( select row_.*, rownum rownum_ from (
+        </if>
+    </sql>
+
+    <sql id="OraclePagingSuffix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            <![CDATA[ ) row_ ) where rownum_ > (#{page} - 1) * #{pageSize} and rownum_ <= #{page} * #{pageSize}]]>
+        </if>
+    </sql>
+</mapper>

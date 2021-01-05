@@ -3,6 +3,9 @@ package com.airline.account.model.et;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author T440
+ */
 @Data
 @NoArgsConstructor
 public class Ticket {
@@ -170,6 +173,30 @@ public class Ticket {
     private String gpFlag;
 
     private String autoTicketFlag;
+
+    private String orderNo;
+
+    private String birthday;
+
+    private String custType;
+
+    private String custNumber;
+
+    private String custCountry;
+
+    private String psgNationalityCountry;
+
+    private String psgGender;
+
+    private String custExpirationDate;
+
+    private String ffAllianceLevel;
+
+    private String ffCompanyCode;
+
+    private String ffFlyingCompany;
+
+    private String ffLoyalLevel;
 
     public Ticket(String documentCarrierIataNo, String documentNo, String documentType, String issueDate) {
         this.documentCarrierIataNo = documentCarrierIataNo;

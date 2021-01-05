@@ -9,26 +9,11 @@ import java.text.ParseException;
  * @author ydc
  * @date 2020/11/29
  */
-public final class EtFormat {
-    /**
-     * 成人
-     */
-    private static final String PSG_A = "A";
-
-    /**
-     * 儿童
-     */
-    private static final String PSG_C = "C";
-
-    /**
-     * 婴儿
-     */
-    private static final String PSG_I = "I";
+public final class EtFormat implements Constant{
 
     public static String taxCodeFormat(String taxCode) {
-        String xf = "XF";
-        if(taxCode.contains(xf)){
-            return xf;
+        if(taxCode.contains(TAX_XF)){
+            return TAX_XF;
         } else {
             return taxCode;
         }

@@ -27,7 +27,7 @@ public class AllocateSource extends PagePiece {
     public AllocateSource(Integer pageSize, String tableName, String configId, String issueSql) {
         this.pageSize = pageSize;
         this.tableName = tableName;
-        this.issueSql = issueSql;
         this.configId = configId;
+        this.issueSql = issueSql;
     }
 }

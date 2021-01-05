@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.et.SegmentMapper">
+    <resultMap type="com.airline.account.model.et.Segment" id="Segment">
+        <result column="DOCUMENT_CARRIER_IATA_NO" property="documentCarrierIataNo" jdbcType="VARCHAR"/>
+        <result column="DOCUMENT_NO" property="documentNo" jdbcType="VARCHAR"/>
+        <result column="ISSUE_DATE" property="issueDate" jdbcType="DATE"/>
+        <result column="DOCUMENT_TYPE" property="documentType" jdbcType="VARCHAR"/>
+        <result column="COUPON_NO" property="couponNo" jdbcType="DECIMAL"/>
+        <result column="CONJUNCTION_TICKET_NO" property="conjunctionTicketNo" jdbcType="VARCHAR"/>
+        <result column="CNJ_CURRENT" property="cnjCurrent" jdbcType="DECIMAL"/>
+        <result column="NOT_VALID_BEFORE_DATE" property="notValidBeforeDate" jdbcType="DATE"/>
+        <result column="NOT_VALID_AFTER_DATE" property="notValidAfterDate" jdbcType="DATE"/>
+        <result column="ORIGIN_CITY_CODE" property="originCityCode" jdbcType="VARCHAR"/>
+        <result column="DESTINATION_CITY_CODE" property="destinationCityCode" jdbcType="VARCHAR"/>
+        <result column="CARRIER_IATA_NO" property="carrierIataNo" jdbcType="VARCHAR"/>
+        <result column="STOPOVER_INDICATOR" property="stopoverIndicator" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS" property="fareBasis" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO" property="flightNo" jdbcType="VARCHAR"/>
+        <result column="SERVICE_CLASS" property="serviceClass" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DATE" property="flightDate" jdbcType="DATE"/>
+        <result column="VAT_FLAG" property="vatFlag" jdbcType="VARCHAR"/>
+        <result column="VAT_COUNTRY_ID" property="vatCountryId" jdbcType="DECIMAL"/>
+        <result column="COUPON_STATUS_INDICATOR" property="couponStatusIndicator" jdbcType="VARCHAR"/>
+        <result column="COUPON_VALUE" property="couponValue" jdbcType="DECIMAL"/>
+        <result column="ATBP_NO" property="atbpNo" jdbcType="DECIMAL"/>
+        <result column="DEPARTURE_DATE" property="departureDate" jdbcType="VARCHAR"/>
+        <result column="ARRIVE_DATE" property="arriveDate" jdbcType="VARCHAR"/>
+        <result column="VALID_COUPON_FLAG" property="validCouponFlag" jdbcType="VARCHAR"/>
+        <result column="DEPARTURE_TERMINAL" property="departureTerminal" jdbcType="VARCHAR"/>
+        <result column="ARRIVAL_TERMINAL" property="arrivalTerminal" jdbcType="VARCHAR"/>
+        <result column="INVOLUNTARY_INDICATOR" property="involuntaryIndicator" jdbcType="VARCHAR"/>
+        <result column="COMPARTMENT" property="compartment" jdbcType="VARCHAR"/>
+        <result column="BAGGAGE_ALLOWANCE" property="baggageAllowance" jdbcType="VARCHAR"/>
+        <result column="EMD_COUPON_STATUS" property="emdCouponStatus" jdbcType="VARCHAR"/>
+        <result column="OPT_FLIGHT_NO" property="optFlightNo" jdbcType="VARCHAR"/>
+        <result column="ASR_SEAT" property="asrSeat" jdbcType="VARCHAR"/>
+        <result column="OPT_CARRIER" property="optCarrier" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertSegment" parameterType="com.airline.account.model.et.Segment">
+        insert ET_FLIGHT_COUPON
+        (
+        <include refid="col"/>
+        )
+        values (
+        #{documentCarrierIataNo, jdbcType=VARCHAR},
+        #{documentNo, jdbcType=VARCHAR},
+        to_date(#{issueDate, jdbcType=DATE}, 'yyyyMMdd'),
+        #{documentType, jdbcType=VARCHAR},
+        #{couponNo, jdbcType=DECIMAL},
+        #{conjunctionTicketNo, jdbcType=VARCHAR},
+        #{cnjCurrent, jdbcType=DECIMAL},
+        #{notValidBeforeDate, jdbcType=DATE},
+        #{notValidAfterDate, jdbcType=DATE},
+        #{originCityCode, jdbcType=VARCHAR},
+        #{destinationCityCode, jdbcType=VARCHAR},
+        #{carrierIataNo, jdbcType=VARCHAR},
+        #{stopoverIndicator, jdbcType=VARCHAR},
+        #{fareBasis, jdbcType=VARCHAR},
+        #{flightNo, jdbcType=VARCHAR},
+        #{serviceClass, jdbcType=VARCHAR},
+        to_date(#{flightDate, jdbcType=DATE}, 'yyyyMMdd'),
+        #{vatFlag, jdbcType=VARCHAR},
+        #{vatCountryId, jdbcType=DECIMAL},
+        #{couponStatusIndicator, jdbcType=VARCHAR},
+        #{couponValue, jdbcType=DECIMAL},
+        #{atbpNo, jdbcType=DECIMAL},
+        #{departureDate, jdbcType=VARCHAR},
+        #{arriveDate, jdbcType=VARCHAR},
+        #{validCouponFlag, jdbcType=VARCHAR},
+        #{departureTerminal, jdbcType=VARCHAR},
+        #{arrivalTerminal, jdbcType=VARCHAR},
+        #{involuntaryIndicator, jdbcType=VARCHAR},
+        #{compartment, jdbcType=VARCHAR},
+        #{baggageAllowance, jdbcType=VARCHAR},
+        #{emdCouponStatus, jdbcType=VARCHAR},
+        #{optFlightNo, jdbcType=VARCHAR},
+        #{asrSeat, jdbcType=VARCHAR},
+        #{optCarrier, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateSegment" parameterType="com.airline.account.model.et.Segment">
+        update ET_FLIGHT_COUPON
+           set
+            DOCUMENT_TYPE = #{documentType, jdbcType=VARCHAR},
+            CONJUNCTION_TICKET_NO = #{conjunctionTicketNo, jdbcType=VARCHAR},
+            CNJ_CURRENT = #{cnjCurrent, jdbcType=DECIMAL},
+            NOT_VALID_BEFORE_DATE = #{notValidBeforeDate, jdbcType=DATE},
+            NOT_VALID_AFTER_DATE = #{notValidAfterDate, jdbcType=DATE},
+            ORIGIN_CITY_CODE = #{originCityCode, jdbcType=VARCHAR},
+            DESTINATION_CITY_CODE = #{destinationCityCode, jdbcType=VARCHAR},
+            CARRIER_IATA_NO = #{carrierIataNo, jdbcType=VARCHAR},
+            STOPOVER_INDICATOR = #{stopoverIndicator, jdbcType=VARCHAR},
+            FARE_BASIS = #{fareBasis, jdbcType=VARCHAR},
+            FLIGHT_NO = #{flightNo, jdbcType=VARCHAR},
+            SERVICE_CLASS = #{serviceClass, jdbcType=VARCHAR},
+            FLIGHT_DATE = to_date(#{flightDate, jdbcType=DATE}, 'yyyyMMdd'),
+            VAT_FLAG = #{vatFlag, jdbcType=VARCHAR},
+            VAT_COUNTRY_ID = #{vatCountryId, jdbcType=DECIMAL},
+            COUPON_STATUS_INDICATOR = #{couponStatusIndicator, jdbcType=VARCHAR},
+            COUPON_VALUE = #{couponValue, jdbcType=DECIMAL},
+            ATBP_NO = #{atbpNo, jdbcType=DECIMAL},
+            DEPARTURE_DATE = #{departureDate, jdbcType=VARCHAR},
+            ARRIVE_DATE = #{arriveDate, jdbcType=VARCHAR},
+            VALID_COUPON_FLAG = #{validCouponFlag, jdbcType=VARCHAR},
+            DEPARTURE_TERMINAL = #{departureTerminal, jdbcType=VARCHAR},
+            ARRIVAL_TERMINAL = #{arrivalTerminal, jdbcType=VARCHAR},
+            INVOLUNTARY_INDICATOR = #{involuntaryIndicator, jdbcType=VARCHAR},
+            COMPARTMENT = #{compartment, jdbcType=VARCHAR},
+            BAGGAGE_ALLOWANCE = #{baggageAllowance, jdbcType=VARCHAR},
+            EMD_COUPON_STATUS = #{emdCouponStatus, jdbcType=VARCHAR},
+            OPT_FLIGHT_NO = #{optFlightNo, jdbcType=VARCHAR},
+            ASR_SEAT = #{asrSeat, jdbcType=VARCHAR},
+            OPT_CARRIER = #{optCarrier, jdbcType=VARCHAR}
+         where
+            DOCUMENT_CARRIER_IATA_NO = #{documentCarrierIataNo}
+            and DOCUMENT_NO = #{documentNo}
+            and COUPON_NO = #{couponNo}
+            and ISSUE_DATE = to_date(#{issueDate}, 'yyyyMMdd')
+    </update>
+
+    <sql id="col">
+            DOCUMENT_CARRIER_IATA_NO,
+            DOCUMENT_NO,
+            ISSUE_DATE,
+            DOCUMENT_TYPE,
+            COUPON_NO,
+            CONJUNCTION_TICKET_NO,
+            CNJ_CURRENT,
+            NOT_VALID_BEFORE_DATE,
+            NOT_VALID_AFTER_DATE,
+            ORIGIN_CITY_CODE,
+            DESTINATION_CITY_CODE,
+            CARRIER_IATA_NO,
+            STOPOVER_INDICATOR,
+            FARE_BASIS,
+            FLIGHT_NO,
+            SERVICE_CLASS,
+            FLIGHT_DATE,
+            VAT_FLAG,
+            VAT_COUNTRY_ID,
+            COUPON_STATUS_INDICATOR,
+            COUPON_VALUE,
+            ATBP_NO,
+            DEPARTURE_DATE,
+            ARRIVE_DATE,
+            VALID_COUPON_FLAG,
+            DEPARTURE_TERMINAL,
+            ARRIVAL_TERMINAL,
+            INVOLUNTARY_INDICATOR,
+            COMPARTMENT,
+            BAGGAGE_ALLOWANCE,
+            EMD_COUPON_STATUS,
+            OPT_FLIGHT_NO,
+            ASR_SEAT,
+            OPT_CARRIER
+    </sql>
+</mapper>

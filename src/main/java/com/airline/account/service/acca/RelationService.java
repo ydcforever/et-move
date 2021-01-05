@@ -49,7 +49,7 @@ public interface RelationService {
     List<AUpl> queryUplByAllocate(AllocateSource allocateSource);
 
     /**
-     * 承运资源分配总数
+     * 承运资源分页总数
      *
      * @param allocateSource 资源分配
      * @return total of current day in this upl file

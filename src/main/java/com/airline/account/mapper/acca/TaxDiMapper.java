@@ -46,5 +46,4 @@ public interface TaxDiMapper {
      * @return list of ip tax
      */
     List<TaxIp> queryMipTax(Sal primarySal);
-
 }
