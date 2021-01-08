@@ -71,7 +71,7 @@
         <result column="VALUABLE_FEE_SC" property="valuableFeeSc" jdbcType="VARCHAR"/>
         <result column="EXCH_ORIGIN_AIRLINE" property="exchOriginAirline" jdbcType="VARCHAR"/>
         <result column="EXCH_ORIGIN_TICKET_NO" property="exchOriginTicketNo" jdbcType="VARCHAR"/>
-        <result column="EXCH_ORIGIN_CNJ_NO" property="exchOriginCnjNo" jdbcType="VARCHAR"/>
+        <result column="EXCH_ORIGIN_COUPON_NO" property="exchOriginCouponNo" jdbcType="VARCHAR"/>
         <result column="RFND_AIRLINE" property="rfndAirline" jdbcType="VARCHAR"/>
         <result column="RFND_TYPE" property="rfndType" jdbcType="VARCHAR"/>
         <result column="RFND_DOCUMENT_NO" property="rfndDocumentNo" jdbcType="VARCHAR"/>
@@ -96,7 +96,7 @@
           INCOME_PAY_TYPE,PAX_QTY,INCOME_PAY,INCOME_PAY_SC,INCOME_PAX,INCOME_PAX_SC,TAX,TAX_SC,
           AGENT_COMMISSION_RATE,AGENT_COMMISSION,AGENT_COMMISSION_SC,ADD_COMMISSION_RATE,ADD_COMMISSION,
           ADD_COMMISSION_SC,OVERWEIGHT_LUGGAGE,OVER_LUGGAGE_PRICE,OVER_LUGGAGE_FEE,VALUABLE_FEE_FEE,
-          VALUABLE_FEE_SC,EXCH_ORIGIN_AIRLINE,EXCH_ORIGIN_TICKET_NO,EXCH_ORIGIN_CNJ_NO,RFND_AIRLINE,
+          VALUABLE_FEE_SC,EXCH_ORIGIN_AIRLINE,EXCH_ORIGIN_TICKET_NO,EXCH_ORIGIN_COUPON_NO,RFND_AIRLINE,
           RFND_TYPE,RFND_DOCUMENT_NO,DATA_SOURCE,SRC_AGENT_NO,CREDIT_CARD_NO,GP_FLAG,
           AUTO_TICKET_FLAG,BATCH_NO,SALE_CITY,SOURCE_NAME
     </sql>

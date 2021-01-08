@@ -1,10 +1,7 @@
 package com.airline.account.service.move;
 
 import com.airline.account.model.acca.Relation;
-import com.airline.account.model.et.Segment;
-import com.airline.account.model.et.Tax;
-import com.airline.account.model.et.Ticket;
-import com.airline.account.model.et.Upl;
+import com.airline.account.model.et.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +43,7 @@ public interface BatchService {
      * @param relations list of relations
      * @throws Exception e
      */
-    void updateSegmentStatus(List<String[]> relations) throws Exception;
+    void updateSegmentStatus(List<CouponStatus> relations) throws Exception;
 
     /**
      * 插入退票关系
@@ -67,8 +64,8 @@ public interface BatchService {
     /**
      * 插入承运数据
      *
-     * @param uplList list of upl
+     * @param etUplList list of upl
      * @throws Exception e
      */
-    void insertUpl(List<Upl> uplList) throws Exception;
+    void insertUpl(List<EtUpl> etUplList) throws Exception;
 }

@@ -14,6 +14,9 @@ public class Relation {
 
     private String primaryTicketNo;
 
+    /**
+     * 换开序号
+     */
     private String cnjNo;
 
     /**

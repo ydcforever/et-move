@@ -11,7 +11,7 @@
         <result column="REFUND_ORDER_NO" property="refundOrderNo" jdbcType="VARCHAR"/>
         <result column="REFUND_OWNER_COMPANY" property="refundOwnerCompany" jdbcType="VARCHAR"/>
         <result column="REFUND_TICKET_NO" property="refundTicketNo" jdbcType="VARCHAR"/>
-        <result column="REFUND_RELATION_NO" property="refundRelationNo" jdbcType="VARCHAR"/>
+        <result column="REFUND_RELATION_NO" property="refundRelationNo" jdbcType="DECIMAL"/>
         <result column="REFUND_DATE" property="refundDate" jdbcType="VARCHAR"/>
         <result column="AGENT_NO" property="agentNo" jdbcType="VARCHAR"/>
         <result column="SALE_CURRENCY" property="saleCurrency" jdbcType="VARCHAR"/>
@@ -27,6 +27,26 @@
         <result column="ADM_EXTRA_FEE_SC" property="admExtraFeeSc" jdbcType="DECIMAL"/>
         <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <select id="queryRefDpByAllocate" resultMap="RefDp" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select REFUND_OWNER_COMPANY, REFUND_TICKET_NO, REFUND_RELATION_NO, REFUND_DATE
+        from ACCA_REF_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.REFUND_DATE = #{currentIssueDate}
+        </if>
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ACCA_REF_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.REFUND_DATE = #{currentIssueDate}
+        </if>
+    </select>
 
     <sql id="col">
             DATA_TYPE,
@@ -54,27 +74,6 @@
             ADM_EXTRA_FEE_SC,
             SOURCE_NAME
     </sql>
-
-
-    <select id="queryRefDpByAllocate" resultMap="RefDp" parameterType="com.airline.account.utils.AllocateSource">
-        <include refid="OraclePagingPrefix"/>
-        select REFUND_OWNER_COMPANY, REFUND_TICKET_NO, REFUND_RELATION_NO, REFUND_DATE
-        from ACCA_REF_DP_M t
-        where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.REFUND_DATE = #{currentIssueDate}
-        </if>
-        <include refid="OraclePagingSuffix"/>
-    </select>
-
-    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
-        select count(*)
-        from ACCA_REF_DP_M t
-        where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.REFUND_DATE = #{currentIssueDate}
-        </if>
-    </select>
 
     <sql id="OraclePagingPrefix">
         <if test="page != null and page!= '' and pageSize != null and pageSize != ''">

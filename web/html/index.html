@@ -192,6 +192,42 @@
                         value : "停止",
                         classify : "stop"
                     }]
+            }, {
+                row:[
+                    {
+                        title : "Exchange"
+                    }, {
+                        type : "button",
+                        field : "exchange_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "exchange_cron"
+                    }, {
+                        type : "button",
+                        field : "exchange_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
+            }, {
+                row:[
+                    {
+                        title : "ACCA_IWB_DP_M"
+                    }, {
+                        type : "button",
+                        field : "iwb_dp_m_start",
+                        value : "开启",
+                        classify: "start"
+                    }, {
+                        type : "text",
+                        field : "iwb_dp_m_cron"
+                    }, {
+                        type : "button",
+                        field : "iwb_dp_m_stop",
+                        value : "停止",
+                        classify : "stop"
+                    }]
             }
         ];
         loadLayout($("#job"), queryExample, "acca");
@@ -208,7 +244,8 @@
         job($("#upl_ip_d_start"), $("#upl_ip_d_stop"), "ACCA_UPL_IP_D", $("#upl_ip_d_cron"));
 
         job($("#ref_dp_m_start"), $("#ref_dp_m_stop"), "ACCA_REF_DP_M", $("#ref_dp_m_cron"));
-
+        job($("#exchange_start"), $("#exchange_stop"), "Exchange", $("#exchange_cron"));
+        job($("#iwb_dp_m_start"), $("#iwb_dp_m_stop"), "ACCA_IWB_DP_M", $("#iwb_dp_m_cron"));
         function job($start, $stop, id, $cron) {
             $start.click(function () {
                 let cron = $cron.val();

@@ -1,10 +1,13 @@
 package com.airline.account.controller;
 
+import com.airline.account.model.et.CouponStatus;
+import com.airline.account.service.acca.*;
+import com.airline.account.service.move.LoadSourceService;
 import com.airline.account.service.move.MoveService;
 import com.airline.account.utils.AllocateSource;
-import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.airline.account.utils.MoveComponent;
 import com.fate.piece.PageHandler;
+import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.fate.pool.normal.NormalPool;
 import com.fate.schedule.SteerableSchedule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,27 @@ public class MoveController {
     @Resource(name = "moveMipService")
     private MoveService moveMipService;
 
+    @Autowired
+    private RfdService rfdService;
+
+    @Autowired
+    private IwbService iwbService;
+
+    @Autowired
+    private RefService refService;
+
+    @Autowired
+    private UplService uplService;
+
+    @Autowired
+    private ExchangeService exchangeService;
+
+    @Autowired
+    private RefundService refundService;
+
+    @Autowired
+    private LoadSourceService loadSourceService;
+
     /**
      * ACCA 国际销售日数据 含有国际改签 状态
      */
@@ -50,7 +74,7 @@ public class MoveController {
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_D", "ACCA_SAL_IP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDipService);
-        moveComponent.executeByDate(poolFactory, allocateSource, pageHandler);
+        loadSourceService.executeByDate(poolFactory, allocateSource, pageHandler);
         poolFactory.destroy();
     }
 
@@ -65,7 +89,7 @@ public class MoveController {
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_D", "ACCA_SAL_DP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDdpService);
-        moveComponent.executeByDate(poolFactory, allocateSource, pageHandler);
+        loadSourceService.executeByDate(poolFactory, allocateSource, pageHandler);
         poolFactory.destroy();
     }
 
@@ -81,7 +105,7 @@ public class MoveController {
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_M", "ACCA_SAL_IP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMipService);
-        moveComponent.executeByDate(poolFactory, allocateSource, pageHandler);
+        loadSourceService.executeByDate(poolFactory, allocateSource, pageHandler);
         poolFactory.destroy();
     }
 
@@ -96,7 +120,7 @@ public class MoveController {
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_M", "ACCA_SAL_DP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMdpService);
-        moveComponent.executeByDate(poolFactory, allocateSource, pageHandler);
+        loadSourceService.executeByDate(poolFactory, allocateSource, pageHandler);
         poolFactory.destroy();
     }
 
@@ -105,13 +129,28 @@ public class MoveController {
      * ACCA 国内改签 状态
      */
     @RequestMapping(value = "/moveRfdDp.do", method = RequestMethod.POST)
-    @SteerableSchedule(id = "moveRfdDp", cron = "0 0 0 * * ?")
+    @SteerableSchedule(id = "ACCA_RFD_DP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveRfdDp() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_RFD_DP_M");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_RFD_DP_M");
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_RFD_DP_M", "ACCA_RFD_DP_M", "");
-        PageHandler pageHandler = moveComponent.createRfdDpPageHandler(normalPool, allocateSource);
-        moveComponent.executeByFile(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = rfdService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByFile(normalPool, allocateSource, pageHandler);
+        normalPool.destroy();
+    }
+
+    /**
+     * 国际改签 状态
+     */
+    @RequestMapping(value = "/moveExchange.do", method = RequestMethod.POST)
+    @SteerableSchedule(id = "Exchange", cron = "0 0 0 * * ?")
+    @ResponseBody
+    public void moveExchange() {
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "Exchange");
+        String sql = "select distinct t.issue_date from ITAX_AUDITOR_EXCHANGE t where t.ori_source = ? ";
+        AllocateSource allocateSource = new AllocateSource(10000, "ITAX_AUDITOR_EXCHANGE", "Exchange", sql);
+        PageHandler pageHandler = exchangeService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -122,11 +161,11 @@ public class MoveController {
     @SteerableSchedule(id = "Refund", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveRefund() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "Refund");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "Refund");
         String sql = "select distinct t.issue_date from ITAX_AUDITOR_REFUND t where t.ori_source = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ITAX_AUDITOR_REFUND", "Refund", sql);
-        PageHandler pageHandler = moveComponent.createRefundPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = refundService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -137,11 +176,11 @@ public class MoveController {
     @SteerableSchedule(id = "moveRefDp", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveRefDp() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_REF_DP_M");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_REF_DP_M");
         String sql = "select distinct t.refund_date from ACCA_REF_DP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_REF_DP_M", "ACCA_REF_DP_M", sql);
-        PageHandler pageHandler = moveComponent.createRefDpPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = refService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -152,11 +191,11 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_UPL_IP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveUplIpM() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_UPL_IP_M");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_IP_M");
         String sql = "select distinct t.ticket_date from ACCA_UPL_IP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_UPL_IP_M", "ACCA_UPL_IP_M", sql);
-        PageHandler pageHandler = moveComponent.createUplPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = uplService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -167,11 +206,11 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_UPL_IP_D", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveUplIpD() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_UPL_IP_D");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_IP_D");
         String sql = "select distinct t.ticket_date from ACCA_UPL_IP_D t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_UPL_IP_D", "ACCA_UPL_IP_D", sql);
-        PageHandler pageHandler = moveComponent.createUplPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = uplService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -182,11 +221,11 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_UPL_DP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveUplDpM() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_UPL_DP_M");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_DP_M");
         String sql = "select distinct t.ticket_date from ACCA_UPL_DP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_UPL_DP_M", "ACCA_UPL_DP_M", sql);
-        PageHandler pageHandler = moveComponent.createUplPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = uplService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 
@@ -197,11 +236,26 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_UPL_DP_D", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveUplDpD() {
-        NormalPool<String[]> normalPool = moveComponent.getRefundUplPool(1000, "ACCA_UPL_DP_D");
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_DP_D");
         String sql = "select distinct t.ticket_date from ACCA_UPL_DP_D t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_UPL_DP_D", "ACCA_UPL_DP_D", sql);
-        PageHandler pageHandler = moveComponent.createUplPageHandler(normalPool, allocateSource);
-        moveComponent.executeByDate(normalPool, allocateSource, pageHandler);
+        PageHandler pageHandler = uplService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
+        normalPool.destroy();
+    }
+
+    /**
+     * ACCA 对内开账国内 月数据
+     */
+    @RequestMapping(value = "/moveIwbDpM.do", method = RequestMethod.POST)
+    @SteerableSchedule(id = "ACCA_IWB_DP_M", cron = "0 0 0 * * ?")
+    @ResponseBody
+    public void moveIwbDpM(){
+        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_IWB_DP_M");
+        String sql = "select distinct t.ticket_date from ACCA_IWB_DP_M t where t.source_name = ? ";
+        AllocateSource allocateSource = new AllocateSource(10000, "ACCA_IWB_DP_M", "ACCA_IWB_DP_M", sql);
+        PageHandler pageHandler = iwbService.createPageHandler(normalPool, allocateSource);
+        loadSourceService.executeByDate(normalPool, allocateSource, pageHandler);
         normalPool.destroy();
     }
 }

@@ -29,7 +29,7 @@ public class RefDp {
 
     private String refundTicketNo;
 
-    private String refundRelationNo;
+    private Integer refundRelationNo;
 
     private String refundDate;
 

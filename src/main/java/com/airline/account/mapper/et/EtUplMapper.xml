@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.airline.account.mapper.et.UplMapper">
-    <resultMap type="com.airline.account.model.et.Upl" id="Upl">
+<mapper namespace="com.airline.account.mapper.et.EtUplMapper">
+    <resultMap type="com.airline.account.model.et.EtUpl" id="EtUpl">
         <result column="DOCUMENT_CARRIER_IATA_NO" property="documentCarrierIataNo" jdbcType="VARCHAR"/>
         <result column="DOCUMENT_NO" property="documentNo" jdbcType="VARCHAR"/>
         <result column="ISSUE_DATE" property="issueDate" jdbcType="DATE"/>
@@ -60,7 +60,7 @@
         <result column="ET_SOURCE" property="etSource" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <insert id="insertUpl" parameterType="com.airline.account.model.et.Upl">
+    <insert id="insertUpl" parameterType="com.airline.account.model.et.EtUpl">
         insert into ET_UPL
         (
         <include refid="col"/>
@@ -125,7 +125,7 @@
         )
     </insert>
 
-    <update id="updateUpl" parameterType="com.airline.account.model.et.Upl">
+    <update id="updateUpl" parameterType="com.airline.account.model.et.EtUpl">
         update ET_UPL
            set
             DOCUMENT_TYPE = #{documentType, jdbcType=VARCHAR},

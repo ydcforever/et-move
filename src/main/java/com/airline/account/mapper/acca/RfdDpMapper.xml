@@ -17,6 +17,20 @@
         <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <select id="queryRefDpByAllocate" resultMap="RfdDp" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select TRANSFER_TICKET_COMPANY, TRANSFER_TICKET_NO, COUPON_NO, TRANSFER_NEW_TICKET_COMPANY, TRANSFER_NEW_TICKET_NO
+        from ACCA_RFD_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ACCA_RFD_DP_M t
+        where t.SOURCE_NAME = #{fileName}
+    </select>
+
     <sql id="col">
         DATA_TYPE,
         OUTPUT_SYS,
@@ -32,20 +46,6 @@
         TRANSFER_NEW_TICKET_NO,
         SOURCE_NAME
     </sql>
-
-    <select id="queryRefDpByAllocate" resultMap="RfdDp" parameterType="com.airline.account.utils.AllocateSource">
-        <include refid="OraclePagingPrefix"/>
-        select TRANSFER_TICKET_COMPANY, TRANSFER_TICKET_NO, COUPON_NO, TRANSFER_NEW_TICKET_COMPANY, TRANSFER_NEW_TICKET_NO
-        from ACCA_RFD_DP_M t
-        where t.SOURCE_NAME = #{fileName}
-        <include refid="OraclePagingSuffix"/>
-    </select>
-
-    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
-        select count(*)
-        from ACCA_RFD_DP_M t
-        where t.SOURCE_NAME = #{fileName}
-    </select>
 
     <sql id="OraclePagingPrefix">
         <if test="page != null and page!= '' and pageSize != null and pageSize != ''">

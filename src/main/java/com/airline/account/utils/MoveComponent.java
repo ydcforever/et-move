@@ -1,22 +1,17 @@
 package com.airline.account.utils;
 
-import com.airline.account.mapper.acca.RefDpMapper;
-import com.airline.account.mapper.acca.RfdDpMapper;
 import com.airline.account.mapper.acca.SalMapper;
 import com.airline.account.mapper.et.MoveLogMapper;
-import com.airline.account.model.acca.*;
+import com.airline.account.model.acca.Sal;
 import com.airline.account.model.et.*;
-import com.airline.account.service.acca.RelationService;
 import com.airline.account.service.move.BatchService;
-import com.airline.account.service.move.InsertService;
-import com.airline.account.service.move.LoadSourceService;
 import com.airline.account.service.move.MoveService;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
-import com.fate.pool.PoolFinalHandler;
 import com.fate.pool.normal.CascadeNormalPool;
 import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.fate.pool.normal.NormalPool;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -32,16 +27,13 @@ import static com.airline.account.utils.MatchUtil.*;
  * @date 2020/12/29.
  */
 @Component
-public class MoveComponent implements Constant{
-
-    @Autowired
-    private LoadSourceService loadSourceService;
+public class MoveComponent implements Constant {
 
     @Autowired
     private BatchService batchService;
 
-    @Autowired
-    private InsertService insertService;
+//    @Autowired
+//    private InsertService insertService;
 
     @Autowired
     private MoveLogMapper moveLogMapper;
@@ -49,171 +41,24 @@ public class MoveComponent implements Constant{
     @Autowired
     private SalMapper salMapper;
 
-    @Autowired
-    private RelationService relationService;
-
-    @Autowired
-    private RfdDpMapper rfdDpMapper;
-
-    @Autowired
-    private RefDpMapper refDpMapper;
-
-    public NormalPool<String[]> getRefundUplPool(Integer batchSize, String poolName) {
+    /**
+     * 用于批量更新 E/R/U/I 状态
+     *
+     * @param batchSize 批处理大小
+     * @param poolName  对象池key
+     * @return 对象池
+     */
+    public NormalPool<CouponStatus> getRelationPool(Integer batchSize, String poolName) {
         return new NormalPool<>(batchSize, list -> {
             try {
                 batchService.updateSegmentStatus(list);
             } catch (Exception e) {
-                MoveLog log = new MoveLog(poolName, "", e.getMessage());
+                CouponStatus relation = list.get(0);
+                String doc = relation.getDocumentCarrierIataNo() + relation.getDocumentNo();
+                MoveLog log = new MoveLog(poolName, doc, e.getMessage());
                 moveLogMapper.insertLog(log);
             }
         });
-    }
-
-    /**
-     * AUpl
-     * !!! 承运插入ET待完成
-     *
-     * @param normalPool 对象池
-     * @param allocateSource 资源分配
-     * @return 分页处理
-     */
-    public PageHandler createUplPageHandler(NormalPool<String[]> normalPool, AllocateSource allocateSource) {
-        return new PageHandler() {
-            @Override
-            public Integer count() {
-                return relationService.countUplByAllocate(allocateSource);
-            }
-
-            @Override
-            public void callback(PagePiece pagePiece) {
-                List<AUpl> relations = relationService.queryUplByAllocate(allocateSource);
-                //承运插入
-                List<Upl> upls = getUpl(relations, allocateSource.getTableName());
-                for(Upl upl : upls) {
-                    try {
-                        insertService.insertUplWithUpdate(upl);
-                    } catch (Exception e) {
-                        MoveLog log = new MoveLog(ERROR_UPL, upl.getDocumentCarrierIataNo() + upl.getDocumentNo(), e.getMessage());
-                        moveLogMapper.insertLog(log);
-                    }
-                }
-
-                for (AUpl aUpl : relations) {
-                    try {
-                        normalPool.beforeAppend();
-                    } catch (Exception e) {
-                        MoveLog log = new MoveLog(aUpl.getAirline3code(), aUpl.getTicketNo(), e.getMessage());
-                        moveLogMapper.insertLog(log);
-                    }
-                    normalPool.appendObject(new String[]{aUpl.getAirline3code(), aUpl.getTicketNo(), aUpl.getCouponNo() + "", STATUS_FLOWN});
-                }
-            }
-        };
-    }
-
-    /**
-     * REF DP
-     * !!! 国内退票关系入ET待完成
-     *
-     * @param normalPool 对象池
-     * @param allocateSource 资源分配
-     * @return 分页处理
-     */
-    public PageHandler createRefDpPageHandler(NormalPool<String[]> normalPool, AllocateSource allocateSource){
-        return new PageHandler() {
-            @Override
-            public Integer count() {
-                return refDpMapper.countRefDpByAllocate(allocateSource);
-            }
-
-            @Override
-            public void callback(PagePiece pagePiece) {
-                List<RefDp> relations = refDpMapper.queryRefDpByAllocate(allocateSource);
-                for(RefDp refDp : relations) {
-                    normalPool.appendObject(new String[]{refDp.getRefundOwnerCompany(), refDp.getRefundTicketNo(), refDp.getRefundRelationNo(), STATUS_REFUND});
-                }
-            }
-        };
-    }
-
-    /**
-     * RFD DP
-     * !!! 国内改签关系入ET待完成
-     *
-     * @param normalPool 对象池
-     * @param allocateSource 资源分配
-     * @return 分页处理
-     */
-    public PageHandler createRfdDpPageHandler(NormalPool<String[]> normalPool, AllocateSource allocateSource){
-        return new PageHandler() {
-            @Override
-            public Integer count() {
-                return rfdDpMapper.countRfdDpByAllocate(allocateSource);
-            }
-
-            @Override
-            public void callback(PagePiece pagePiece) {
-                List<RfdDp> relations = rfdDpMapper.queryRfdDpByAllocate(allocateSource);
-                for(RfdDp rfdDp : relations) {
-                    normalPool.appendObject(new String[]{rfdDp.getTransferTicketCompany(), rfdDp.getTransferTicketNo(), rfdDp.getCouponNo()+"", STATUS_EXCHANGE});
-                }
-            }
-        };
-    }
-
-    /**
-     * Refund
-     * !!! 国际退票关系入ET待完成
-     *
-     * @param normalPool 对象池
-     * @param allocateSource 资源分配
-     * @return 分页处理
-     */
-    public PageHandler createRefundPageHandler(NormalPool<String[]> normalPool, AllocateSource allocateSource) {
-        return new PageHandler() {
-            @Override
-            public Integer count() {
-                return relationService.countRefundByAllocate(allocateSource);
-            }
-
-            @Override
-            public void callback(PagePiece pagePiece) {
-                List<Relation> relations = relationService.queryRefundByAllocate(allocateSource);
-
-                for (Relation relation : relations) {
-                    String[] tkts = relation.getTicketNoStr().split(";");
-                    String[] tktStatus = relation.getCouponStatus().split(";");
-                    for (int i = 0, len = tktStatus.length; i < len; i++) {
-                        String[] cpns = tktStatus[i].split("");
-                        String tkt = tkts[i];
-//                        退票插入
-//                        String[] ref = new String[]{tkt.substring(0, 3), tkt.substring(3), relation.getIssueDate(), tktStatus[i]};
-//                        List<String[]> refunds = new ArrayList<>();
-//                        refunds.add(ref);
-//                        try {
-//                            batchService.insertRefund(refunds);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            refunds.clear();
-//                        }
-
-                        for (String cpn : cpns) {
-                            if (!COUPON_INVALID.equals(cpn)) {
-                                try {
-                                    normalPool.beforeAppend();
-                                } catch (Exception e) {
-                                    MoveLog log = new MoveLog(relation.getPrimaryTicketNo(), "", e.getMessage());
-                                    moveLogMapper.insertLog(log);
-                                }
-                                String[] refund = new String[]{tkt.substring(0, 3), tkt.substring(3), cpn, STATUS_REFUND};
-                                normalPool.appendObject(refund);
-                            }
-                        }
-                    }
-                }
-            }
-        };
     }
 
     public PageHandler createSalPageHandler(CascadeNormalPoolFactory poolFactory, AllocateSource allocateSource, MoveService moveService) {
@@ -225,14 +70,9 @@ public class MoveComponent implements Constant{
 
             @Override
             public void callback(PagePiece pagePiece) {
-                List<Sal> list = salMapper.queryPrimaryByAllocate(allocateSource);
-                for (Sal sal : list) {
-                    try {
-                        move(poolFactory, sal, moveService);
-                    } catch (Exception e) {
-                        MoveLog log = new MoveLog(sal.getAirline3code(), sal.getFirstTicketNo(), e.getMessage());
-                        moveLogMapper.insertLog(log);
-                    }
+                List<Sal> salList = salMapper.queryPrimaryByAllocate(allocateSource);
+                for (Sal sal : salList) {
+                    move(poolFactory, sal, moveService, allocateSource.getFileName());
                 }
             }
         };
@@ -243,7 +83,7 @@ public class MoveComponent implements Constant{
      * !!! 国内改签请修改MoveService实现
      *
      * @param ticketSize 批处理票数
-     * @param batchSize 相关信息批处理数
+     * @param batchSize  相关信息批处理数
      * @return 票相关对象池
      */
     public CascadeNormalPoolFactory getSalPoolFactory(Integer ticketSize, Integer batchSize) {
@@ -252,7 +92,9 @@ public class MoveComponent implements Constant{
             try {
                 batchService.insertTicket(list);
             } catch (Exception e) {
-                MoveLog log = new MoveLog(POOL_KEY_TICKET, "", e.getMessage());
+                Ticket ticket = list.get(0);
+                String doc = ticket.getDocumentCarrierIataNo() + ticket.getDocumentNo();
+                MoveLog log = new MoveLog(POOL_KEY_TICKET, doc, e.getMessage());
                 moveLogMapper.insertLog(log);
             }
         });
@@ -262,7 +104,9 @@ public class MoveComponent implements Constant{
             try {
                 batchService.insertSegment(list);
             } catch (Exception e) {
-                MoveLog log = new MoveLog(POOL_KEY_SEGMENT, "", e.getMessage());
+                Segment segment = list.get(0);
+                String doc = segment.getDocumentCarrierIataNo() + segment.getDocumentNo();
+                MoveLog log = new MoveLog(POOL_KEY_SEGMENT, doc, e.getMessage());
                 moveLogMapper.insertLog(log);
             }
         });
@@ -272,13 +116,15 @@ public class MoveComponent implements Constant{
             try {
                 batchService.insertTax(list);
             } catch (Exception e) {
-                MoveLog log = new MoveLog(POOL_KEY_TAX, "", e.getMessage());
+                Tax tax = list.get(0);
+                String doc = tax.getDocumentCarrierIataNo() + tax.getDocumentNo();
+                MoveLog log = new MoveLog(POOL_KEY_TAX, doc, e.getMessage());
                 moveLogMapper.insertLog(log);
             }
         });
         poolFactory.addPool(POOL_KEY_TAX, taxPool);
 
-        CascadeNormalPool<String[]> exchangePool = new CascadeNormalPool<>(batchSize, list -> {
+        CascadeNormalPool<CouponStatus> exchangePool = new CascadeNormalPool<>(batchSize, list -> {
             try {
                 batchService.updateSegmentStatus(list);
             } catch (Exception e) {
@@ -290,76 +136,51 @@ public class MoveComponent implements Constant{
         return poolFactory;
     }
 
-    /**
-     * 执行按文件分页的数据
-     *
-     * @param finalHandler 对象池处理
-     * @param allocateSource 资源分配
-     * @param pageHandler 分页处理
-     */
-    public void executeByFile(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler) {
-        List<String> sources = loadSourceService.getSource(allocateSource.getConfigId());
-        for (String file : sources) {
-            allocateSource.setFileName(file);
-            allocateSource.setTotal(pageHandler);
-            try {
-                finalHandler.finalHandle();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            loadSourceService.updateStatus(allocateSource.getConfigId(), file, "Y");
-        }
-    }
-
-    /**
-     * 执行按文件日期分页的数据
-     *
-     * @param finalHandler 对象池处理
-     * @param allocateSource 资源分配
-     * @param pageHandler 分页处理
-     */
-    public void executeByDate(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler) {
-        List<String> sources = loadSourceService.getSource(allocateSource.getConfigId());
-        for (String file : sources) {
-            allocateSource.setFileName(file);
-            List<String> issueDates = loadSourceService.getIssueDates(allocateSource);
-            for (String issue : issueDates) {
-                allocateSource.setCurrentIssueDate(issue);
-                allocateSource.setTotal(pageHandler);
-                try {
-                    finalHandler.finalHandle();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            loadSourceService.updateStatus(allocateSource.getConfigId(), file, "Y");
-        }
-    }
-
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void move(CascadeNormalPoolFactory poolFactory, Sal primarySal, MoveService moveService) throws Exception{
-        List<Sal> sals = moveService.getSal(primarySal);
-        String cnjTktString = getCnjTktString(sals);
-        for (Sal s : sals) {
-            Ticket ticket = getTicket(s, cnjTktString, moveService.dataSource());
+    public void move(CascadeNormalPoolFactory poolFactory, Sal primarySal, MoveService moveService, String sourceName){
+        List<Sal> salList = moveService.getSal(primarySal);
+        String cnjTktString = getCnjTktString(salList);
+        for (Sal s : salList) {
+            Ticket ticket = getTicket(s, cnjTktString, sourceName);
             poolFactory.appendObject(POOL_KEY_TICKET, ticket);
             addSeg(poolFactory, s);
         }
         List<Tax> taxes = moveService.getTax(primarySal);
         poolFactory.appendObject(POOL_KEY_TAX, taxes);
         if (STATUS_EXCHANGE.equals(primarySal.getSaleType())) {
-            List<Relation> relations = moveService.getExchange(primarySal);
-            for(Relation relation : relations){
-                String ticketNo = relation.getOrgTicketNo();
-                String[] status = relation.getCouponStatus().split("");
-                for (String cpnNo : status) {
+            //国内改签
+            if (SYS_DP.equals(primarySal.getOutputSys())) {
+                String status = primarySal.getExchOriginCouponNo();
+                String[] relation = StringUtils.isBlank(status) ? "1234".split("") : status.split("");
+                for (String cpnNo : relation) {
                     if (!COUPON_INVALID.equals(cpnNo)) {
-                        poolFactory.appendObject(POOL_KEY_EXCHANGE, new String[]{ticketNo.substring(0, 3), ticketNo.substring(3), cpnNo, STATUS_EXCHANGE});
+                        CouponStatus couponStatus = new CouponStatus(primarySal.getExchOriginAirline(),
+                                primarySal.getExchOriginTicketNo(), EtFormat.intFormat(cpnNo), STATUS_EXCHANGE);
+                        poolFactory.appendObject(POOL_KEY_EXCHANGE, couponStatus);
+                    }
+                }
+            } else {
+                //国际改签
+                List<Exchange> exchanges = moveService.getExchange(primarySal);
+                for (Exchange exchange : exchanges) {
+                    String[] status = exchange.getExchangeCouponUseIndicator().split("");
+                    for (String cpnNo : status) {
+                        if (!COUPON_INVALID.equals(cpnNo)) {
+                            CouponStatus relation = new CouponStatus(exchange.getIssueInExchCarrierIataNo(), exchange.getIssueInExchDocumentNo(),
+                                    EtFormat.intFormat(cpnNo), STATUS_EXCHANGE);
+                            poolFactory.appendObject(POOL_KEY_EXCHANGE, relation);
+                        }
                     }
                 }
             }
         }
-        poolFactory.afterAllAppend();
+
+        try {
+            poolFactory.afterAllAppend();
+        } catch (Exception e) {
+            MoveLog log = new MoveLog(primarySal.getAirline3code(), primarySal.getFirstTicketNo(), e.getMessage());
+            moveLogMapper.insertLog(log);
+        }
     }
 
     private static void addSeg(CascadeNormalPoolFactory factory, Sal sal) {

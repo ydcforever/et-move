@@ -150,7 +150,7 @@ public class Sal {
 
     private String exchOriginTicketNo;
 
-    private String exchOriginCnjNo;
+    private String exchOriginCouponNo;
 
     private String rfndAirline;
 

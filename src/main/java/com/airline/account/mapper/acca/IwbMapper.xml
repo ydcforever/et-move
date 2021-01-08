@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.acca.IwbMapper">
+    <resultMap type="com.airline.account.model.acca.Iwb" id="Iwb">
+        <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
+        <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
+        <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
+        <result column="BAL_PERIOD" property="balPeriod" jdbcType="VARCHAR"/>
+        <result column="AIRLINE_3CODE" property="airline3code" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
+        <result column="COUPON_NO" property="couponNo" jdbcType="DECIMAL"/>
+        <result column="TICKET_TYPE" property="ticketType" jdbcType="VARCHAR"/>
+        <result column="TICKET_DATE" property="ticketDate" jdbcType="VARCHAR"/>
+        <result column="AGENT_CODE" property="agentCode" jdbcType="VARCHAR"/>
+        <result column="CARRIER_CODE" property="carrierCode" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_NO" property="flightNo" jdbcType="VARCHAR"/>
+        <result column="FLIGHT_DATE" property="flightDate" jdbcType="VARCHAR"/>
+        <result column="DEPT_AIRPORT" property="deptAirport" jdbcType="VARCHAR"/>
+        <result column="ARR_AIRPORT" property="arrAirport" jdbcType="VARCHAR"/>
+        <result column="MAIN_CLASS" property="mainClass" jdbcType="VARCHAR"/>
+        <result column="SUB_CLASS" property="subClass" jdbcType="VARCHAR"/>
+        <result column="FARE_BASIS" property="fareBasis" jdbcType="VARCHAR"/>
+        <result column="SALE_CURRENCY" property="saleCurrency" jdbcType="VARCHAR"/>
+        <result column="PAX_TYPE" property="paxType" jdbcType="VARCHAR"/>
+        <result column="PAX_QTY" property="paxQty" jdbcType="DECIMAL"/>
+        <result column="LUGGAGE_HEIGHT" property="luggageHeight" jdbcType="DECIMAL"/>
+        <result column="GROSS_INCOME" property="grossIncome" jdbcType="DECIMAL"/>
+        <result column="GROSS_INCOME_SC" property="grossIncomeSc" jdbcType="DECIMAL"/>
+        <result column="NET_INCOME" property="netIncome" jdbcType="DECIMAL"/>
+        <result column="NET_INCOME_SC" property="netIncomeSc" jdbcType="DECIMAL"/>
+        <result column="COMMISSION_RATE" property="commissionRate" jdbcType="DECIMAL"/>
+        <result column="COMMISSION" property="commission" jdbcType="DECIMAL"/>
+        <result column="COMMISSION_SC" property="commissionSc" jdbcType="DECIMAL"/>
+        <result column="BGG_PRICED_FEE" property="bggPricedFee" jdbcType="DECIMAL"/>
+        <result column="BGG_PRICED_FEE_SC" property="bggPricedFeeSc" jdbcType="DECIMAL"/>
+        <result column="AIRPORT_TAX" property="airportTax" jdbcType="DECIMAL"/>
+        <result column="AIRPORT_TAX_SC" property="airportTaxSc" jdbcType="DECIMAL"/>
+        <result column="FUEL_SURCHARGE" property="fuelSurcharge" jdbcType="DECIMAL"/>
+        <result column="FUEL_SURCHARGE_SC" property="fuelSurchargeSc" jdbcType="DECIMAL"/>
+        <result column="BILLING_GROSS" property="billingGross" jdbcType="DECIMAL"/>
+        <result column="BILLING_GROSS_SC" property="billingGrossSc" jdbcType="DECIMAL"/>
+        <result column="BILLING_NET" property="billingNet" jdbcType="DECIMAL"/>
+        <result column="BILLING_NET_SC" property="billingNetSc" jdbcType="DECIMAL"/>
+        <result column="BILLING_COMMISSION_RATE" property="billingCommissionRate" jdbcType="DECIMAL"/>
+        <result column="BILLING_COMMISSION" property="billingCommission" jdbcType="DECIMAL"/>
+        <result column="BILLING_COMMISSION_SC" property="billingCommissionSc" jdbcType="DECIMAL"/>
+        <result column="BILLING_NO" property="billingNo" jdbcType="VARCHAR"/>
+        <result column="BILLING_AIRLINE_3CODE" property="billingAirline3code" jdbcType="VARCHAR"/>
+        <result column="BILLING_DATE" property="billingDate" jdbcType="VARCHAR"/>
+        <result column="EMEN_FLAG" property="emenFlag" jdbcType="VARCHAR"/>
+        <result column="MKT_CARRIER_CD" property="mktCarrierCd" jdbcType="VARCHAR"/>
+        <result column="MKT_FLIGHT_NO" property="mktFlightNo" jdbcType="VARCHAR"/>
+        <result column="SALE_MAIN_CLASS" property="saleMainClass" jdbcType="VARCHAR"/>
+        <result column="SALE_SUB_CLASS" property="saleSubClass" jdbcType="VARCHAR"/>
+        <result column="BILLING_CURRENCY" property="billingCurrency" jdbcType="VARCHAR"/>
+        <result column="BILLING_SOURCE" property="billingSource" jdbcType="VARCHAR"/>
+        <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryIwbByAllocate" resultMap="Iwb" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select 
+        <include refid="col"/>
+        from ${tableName} t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.TICKET_DATE = #{currentIssueDate}
+        </if>
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countIwbByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ${tableName} t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.TICKET_DATE = #{currentIssueDate}
+        </if>
+    </select>
+
+    <sql id="col">
+        DATA_TYPE,
+            OUTPUT_SYS,
+            BAL_MONTH,
+            BAL_PERIOD,
+            AIRLINE_3CODE,
+            TICKET_NO,
+            COUPON_NO,
+            TICKET_TYPE,
+            TICKET_DATE,
+            AGENT_CODE,
+            CARRIER_CODE,
+            FLIGHT_NO,
+            FLIGHT_DATE,
+            DEPT_AIRPORT,
+            ARR_AIRPORT,
+            MAIN_CLASS,
+            SUB_CLASS,
+            FARE_BASIS,
+            SALE_CURRENCY,
+            PAX_TYPE,
+            PAX_QTY,
+            LUGGAGE_HEIGHT,
+            GROSS_INCOME,
+            GROSS_INCOME_SC,
+            NET_INCOME,
+            NET_INCOME_SC,
+            COMMISSION_RATE,
+            COMMISSION,
+            COMMISSION_SC,
+            BGG_PRICED_FEE,
+            BGG_PRICED_FEE_SC,
+            AIRPORT_TAX,
+            AIRPORT_TAX_SC,
+            FUEL_SURCHARGE,
+            FUEL_SURCHARGE_SC,
+            BILLING_GROSS,
+            BILLING_GROSS_SC,
+            BILLING_NET,
+            BILLING_NET_SC,
+            BILLING_COMMISSION_RATE,
+            BILLING_COMMISSION,
+            BILLING_COMMISSION_SC,
+            BILLING_NO,
+            BILLING_AIRLINE_3CODE,
+            BILLING_DATE,
+            EMEN_FLAG,
+            MKT_CARRIER_CD,
+            MKT_FLIGHT_NO,
+            SALE_MAIN_CLASS,
+            SALE_SUB_CLASS,
+            BILLING_CURRENCY,
+            BILLING_SOURCE,
+            SOURCE_NAME
+    </sql>
+
+    <sql id="OraclePagingPrefix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            select *
+            from ( select row_.*, rownum rownum_ from (
+        </if>
+    </sql>
+
+    <sql id="OraclePagingSuffix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            <![CDATA[ ) row_ ) where rownum_ > (#{page} - 1) * #{pageSize} and rownum_ <= #{page} * #{pageSize}]]>
+        </if>
+    </sql>
+</mapper>

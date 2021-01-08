@@ -34,8 +34,4 @@ public class Exchange {
     private String issueDate;
 
     private String issueInExchDate;
-
-    private String createDate;
-
-    private String updateDate;
 }

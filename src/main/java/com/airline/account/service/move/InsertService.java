@@ -3,7 +3,7 @@ package com.airline.account.service.move;
 import com.airline.account.model.et.Segment;
 import com.airline.account.model.et.Tax;
 import com.airline.account.model.et.Ticket;
-import com.airline.account.model.et.Upl;
+import com.airline.account.model.et.EtUpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,10 +16,10 @@ public interface InsertService {
     /**
      * 承运插入
      *
-     * @param upl 承运
+     * @param etUpl 承运
      * @throws Exception e
      */
-    void insertUplWithUpdate(Upl upl) throws Exception;
+    void insertUplWithUpdate(EtUpl etUpl) throws Exception;
 
     /**
      * 票面插入

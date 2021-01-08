@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class Upl {
+public class EtUpl {
     private String documentCarrierIataNo;
 
     private String documentNo;

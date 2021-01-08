@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class AUpl {
+public class Upl {
     private String dataType;
 
     private String outputSys;

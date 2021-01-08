@@ -6,7 +6,7 @@ package com.airline.account.utils;
  */
 public interface Constant {
 
-    String ERROR_UPL = "UPL";
+    String SYS_DP = "DP";
 
     /**
      * 票面对象池
@@ -56,7 +56,12 @@ public interface Constant {
     /**
      * Flown
      */
-    String STATUS_FLOWN = "F";
+    String STATUS_FLOWN = "U";
+
+    /**
+     * Inward Billing
+     */
+    String STATUS_IWB = "I";
 
     /**
      * 有效

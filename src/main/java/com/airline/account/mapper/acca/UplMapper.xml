@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.airline.account.mapper.acca.AUplMapper">
-    <resultMap type="com.airline.account.model.acca.AUpl" id="AUpl">
+<mapper namespace="com.airline.account.mapper.acca.UplMapper">
+    <resultMap type="com.airline.account.model.acca.Upl" id="Upl">
         <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR"/>
         <result column="OUTPUT_SYS" property="outputSys" jdbcType="VARCHAR"/>
         <result column="BAL_MONTH" property="balMonth" jdbcType="VARCHAR"/>
@@ -69,28 +69,48 @@
         and t.ticket_no = #{doc}
     </sql>
 
-    <select id="queryDDpUpl" resultMap="AUpl">
+    <select id="queryDDpUpl" resultMap="Upl">
         select <include refid="showCol"/>
         from ACCA_UPL_DP_D t
         <include refid="whereClause"/>
     </select>
 
-    <select id="queryDIpUpl" resultMap="AUpl">
+    <select id="queryDIpUpl" resultMap="Upl">
         select <include refid="showCol"/>
         from ACCA_UPL_IP_D t
         <include refid="whereClause"/>
     </select>
 
-    <select id="queryMDpUpl" resultMap="AUpl">
+    <select id="queryMDpUpl" resultMap="Upl">
         select <include refid="showCol"/>
         from ACCA_UPL_DP_M t
         <include refid="whereClause"/>
     </select>
 
-    <select id="queryMIpUpl" resultMap="AUpl">
+    <select id="queryMIpUpl" resultMap="Upl">
         select <include refid="showCol"/>
         from ACCA_UPL_IP_M t
         <include refid="whereClause"/>
+    </select>
+
+    <select id="queryUplByAllocate" resultMap="Upl" parameterType="com.airline.account.utils.AllocateSource">
+        <include refid="OraclePagingPrefix"/>
+        select AIRLINE_3CODE,TICKET_NO,COUPON_NO,TICKET_DATE
+        from ${tableName} t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.TICKET_DATE = #{currentIssueDate}
+        </if>
+        <include refid="OraclePagingSuffix"/>
+    </select>
+
+    <select id="countUplByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+        select count(*)
+        from ${tableName} t
+        where t.SOURCE_NAME = #{fileName}
+        <if test="currentIssueDate != null">
+            and t.TICKET_DATE = #{currentIssueDate}
+        </if>
     </select>
 
     <sql id="showCol">
@@ -102,5 +122,18 @@
         BGG_PRICED_FEE,BGG_PRICED_FEE_SC,AIRPORT_TAX,AIRPORT_TAX_SC,FUEL_SURCHARGE,FUEL_SURCHARGE_SC,AVIATION_INSURANCE,
         AVIATION_INSURANCE_SC,SPA_ID,MKT_CARRIER_CODE,MKT_FLIGHT_NO,EMD_TYPE,EMD_REASON_CODE,EMD_SUB_REASON_CODE,
         NET_NET_INCOME_CNY,NET_NET_INCOME_USD,SOURCE_NAME
+    </sql>
+
+    <sql id="OraclePagingPrefix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            select *
+            from ( select row_.*, rownum rownum_ from (
+        </if>
+    </sql>
+
+    <sql id="OraclePagingSuffix">
+        <if test="page != null and page!= '' and pageSize != null and pageSize != ''">
+            <![CDATA[ ) row_ ) where rownum_ > (#{page} - 1) * #{pageSize} and rownum_ <= #{page} * #{pageSize}]]>
+        </if>
     </sql>
 </mapper>

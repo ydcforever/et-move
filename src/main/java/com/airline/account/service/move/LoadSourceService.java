@@ -1,17 +1,36 @@
 package com.airline.account.service.move;
 
 import com.airline.account.utils.AllocateSource;
+import com.fate.piece.PageHandler;
+import com.fate.pool.PoolFinalHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- *
  * @author ydc
  * @date 2020/12/19
  */
 @Service
 public interface LoadSourceService {
+
+    /**
+     * 执行按文件分页的数据
+     *
+     * @param finalHandler   对象池处理
+     * @param allocateSource 资源分配
+     * @param pageHandler    分页处理
+     */
+    void executeByFile(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler);
+
+    /**
+     * 执行按文件日期分页的数据
+     *
+     * @param finalHandler   对象池处理
+     * @param allocateSource 资源分配
+     * @param pageHandler    分页处理
+     */
+    void executeByDate(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler);
 
     /**
      * 获取要处理的资源文件

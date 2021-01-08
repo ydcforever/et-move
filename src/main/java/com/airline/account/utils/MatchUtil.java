@@ -1,13 +1,13 @@
 package com.airline.account.utils;
 
-import com.airline.account.model.acca.AUpl;
 import com.airline.account.model.acca.Sal;
 import com.airline.account.model.acca.TaxDp;
 import com.airline.account.model.acca.TaxIp;
+import com.airline.account.model.acca.Upl;
+import com.airline.account.model.et.EtUpl;
 import com.airline.account.model.et.Segment;
 import com.airline.account.model.et.Tax;
 import com.airline.account.model.et.Ticket;
-import com.airline.account.model.et.Upl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,73 +20,73 @@ import java.util.Map;
  */
 public final class MatchUtil implements Constant{
 
-    public static List<Upl> getUpl(List<AUpl> aUplList, String etSource){
-        List<Upl> list = new ArrayList<>();
-        for (AUpl aUpl : aUplList){
-            Upl upl = getUpl(aUpl, etSource);
-            list.add(upl);
+    public static List<EtUpl> getUpl(List<Upl> uplList){
+        List<EtUpl> list = new ArrayList<>();
+        for (Upl upl : uplList){
+            EtUpl etUpl = getUpl(upl);
+            list.add(etUpl);
         }
         return list;
     }
 
-    public static Upl getUpl(AUpl aUpl, String etSource){
-        Upl upl = new Upl();
-        upl.setEtSource(etSource);
-        upl.setDocumentCarrierIataNo(aUpl.getAirline3code());
-        upl.setDocumentNo(aUpl.getTicketNo());
-        upl.setIssueDate(aUpl.getTicketDate());
-        upl.setCouponNo(aUpl.getCouponNo());
-        upl.setAgentIataNo(aUpl.getAgentCode());
-        upl.setFlightType(aUpl.getFlightType());
-        upl.setCarrierO(aUpl.getCarrierO());
-        upl.setSubCarrier(aUpl.getSubCarrier());
-        upl.setFlightRounteCd(aUpl.getFlightRounteCd());
-        upl.setFlightRouteType(aUpl.getFlightRouteType());
-        upl.setRoundType(aUpl.getRoundType());
-        upl.setFlightNo(aUpl.getFlightNo());
-        upl.setCarrierDate(aUpl.getCarrierDate());
-        upl.setTailNbr(aUpl.getTailNbr());
-        upl.setDeptAirport(aUpl.getDeptAirport());
-        upl.setArrAirport(aUpl.getArrAirport());
-        upl.setMainClass(aUpl.getMainClass());
-        upl.setSubClass(aUpl.getSubClass());
-        upl.setFareBasis(aUpl.getFareBasis());
-        upl.setSaleCurrency(aUpl.getSaleCurrency());
-        upl.setProductCode(aUpl.getProductCode());
-        upl.setKeyAccount(aUpl.getKeyAccount());
-        upl.setEtFlag(aUpl.getEtFlag());
-        upl.setFfpMemberNo(aUpl.getFfpMemberNo());
-        upl.setTourCode(aUpl.getTourCode());
-        upl.setChartereFlag(aUpl.getChartereFlag());
-        upl.setPaxType(aUpl.getPaxType());
-        upl.setPaxQty(aUpl.getPaxQty());
-        upl.setLuggageHeight(aUpl.getLuggageHeight());
-        upl.setGrossIncome(aUpl.getGrossIncome());
-        upl.setGrossIncomeSc(aUpl.getGrossIncomeSc());
-        upl.setNetIncome(aUpl.getNetIncome());
-        upl.setNetIncomeSc(aUpl.getNetIncomeSc());
-        upl.setAgentCommissionRate(aUpl.getAgentCommissionRate());
-        upl.setAgentCommission(aUpl.getAgentCommission());
-        upl.setAgentCommissionSc(aUpl.getAgentCommissionSc());
-        upl.setAddedCommission(aUpl.getAddedCommission());
-        upl.setAddedCommissionSc(aUpl.getAddedCommissionSc());
-        upl.setBggPricedFee(aUpl.getBggPricedFee());
-        upl.setBggPricedFeeSc(aUpl.getBggPricedFeeSc());
-        upl.setAirportTax(aUpl.getAirportTax());
-        upl.setAirportTaxSc(aUpl.getAirportTaxSc());
-        upl.setFuelSurcharge(aUpl.getFuelSurcharge());
-        upl.setFuelSurchargeSc(aUpl.getFuelSurchargeSc());
-        upl.setAviationInsurance(aUpl.getAviationInsurance());
-        upl.setAviationInsuranceSc(aUpl.getAviationInsuranceSc());
-        upl.setSpaId(aUpl.getSpaId());
-        upl.setMktCarrierCode(aUpl.getMktCarrierCode());
-        upl.setMktFlightNo(aUpl.getMktFlightNo());
-        upl.setEmdType(aUpl.getEmdType());
-        upl.setEmdReasonCode(aUpl.getEmdReasonCode());
-        upl.setEmdSubReasonCode(aUpl.getEmdSubReasonCode());
-        upl.setNetNetIncomeCny(aUpl.getNetNetIncomeCny());
-        upl.setNetNetIncomeUsd(aUpl.getNetNetIncomeUsd());
-        return upl;
+    public static EtUpl getUpl(Upl upl){
+        EtUpl etUpl = new EtUpl();
+        etUpl.setEtSource(upl.getSourceName());
+        etUpl.setDocumentCarrierIataNo(upl.getAirline3code());
+        etUpl.setDocumentNo(upl.getTicketNo());
+        etUpl.setIssueDate(upl.getTicketDate());
+        etUpl.setCouponNo(upl.getCouponNo());
+        etUpl.setAgentIataNo(upl.getAgentCode());
+        etUpl.setFlightType(upl.getFlightType());
+        etUpl.setCarrierO(upl.getCarrierO());
+        etUpl.setSubCarrier(upl.getSubCarrier());
+        etUpl.setFlightRounteCd(upl.getFlightRounteCd());
+        etUpl.setFlightRouteType(upl.getFlightRouteType());
+        etUpl.setRoundType(upl.getRoundType());
+        etUpl.setFlightNo(upl.getFlightNo());
+        etUpl.setCarrierDate(upl.getCarrierDate());
+        etUpl.setTailNbr(upl.getTailNbr());
+        etUpl.setDeptAirport(upl.getDeptAirport());
+        etUpl.setArrAirport(upl.getArrAirport());
+        etUpl.setMainClass(upl.getMainClass());
+        etUpl.setSubClass(upl.getSubClass());
+        etUpl.setFareBasis(upl.getFareBasis());
+        etUpl.setSaleCurrency(upl.getSaleCurrency());
+        etUpl.setProductCode(upl.getProductCode());
+        etUpl.setKeyAccount(upl.getKeyAccount());
+        etUpl.setEtFlag(upl.getEtFlag());
+        etUpl.setFfpMemberNo(upl.getFfpMemberNo());
+        etUpl.setTourCode(upl.getTourCode());
+        etUpl.setChartereFlag(upl.getChartereFlag());
+        etUpl.setPaxType(upl.getPaxType());
+        etUpl.setPaxQty(upl.getPaxQty());
+        etUpl.setLuggageHeight(upl.getLuggageHeight());
+        etUpl.setGrossIncome(upl.getGrossIncome());
+        etUpl.setGrossIncomeSc(upl.getGrossIncomeSc());
+        etUpl.setNetIncome(upl.getNetIncome());
+        etUpl.setNetIncomeSc(upl.getNetIncomeSc());
+        etUpl.setAgentCommissionRate(upl.getAgentCommissionRate());
+        etUpl.setAgentCommission(upl.getAgentCommission());
+        etUpl.setAgentCommissionSc(upl.getAgentCommissionSc());
+        etUpl.setAddedCommission(upl.getAddedCommission());
+        etUpl.setAddedCommissionSc(upl.getAddedCommissionSc());
+        etUpl.setBggPricedFee(upl.getBggPricedFee());
+        etUpl.setBggPricedFeeSc(upl.getBggPricedFeeSc());
+        etUpl.setAirportTax(upl.getAirportTax());
+        etUpl.setAirportTaxSc(upl.getAirportTaxSc());
+        etUpl.setFuelSurcharge(upl.getFuelSurcharge());
+        etUpl.setFuelSurchargeSc(upl.getFuelSurchargeSc());
+        etUpl.setAviationInsurance(upl.getAviationInsurance());
+        etUpl.setAviationInsuranceSc(upl.getAviationInsuranceSc());
+        etUpl.setSpaId(upl.getSpaId());
+        etUpl.setMktCarrierCode(upl.getMktCarrierCode());
+        etUpl.setMktFlightNo(upl.getMktFlightNo());
+        etUpl.setEmdType(upl.getEmdType());
+        etUpl.setEmdReasonCode(upl.getEmdReasonCode());
+        etUpl.setEmdSubReasonCode(upl.getEmdSubReasonCode());
+        etUpl.setNetNetIncomeCny(upl.getNetNetIncomeCny());
+        etUpl.setNetNetIncomeUsd(upl.getNetNetIncomeUsd());
+        return etUpl;
     }
 
     /**
@@ -319,5 +319,6 @@ public final class MatchUtil implements Constant{
         tax.setDocumentType(dp.getSaleType());
         tax.setIssueDate(issueDate);
         tax.setTaxCurrency(dp.getCurrency());
+        tax.setTaxSeqNo(1);
     }
 }

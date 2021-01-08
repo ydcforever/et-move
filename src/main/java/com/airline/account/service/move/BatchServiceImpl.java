@@ -1,15 +1,11 @@
 package com.airline.account.service.move;
 
+import com.airline.account.mapper.et.EtUplMapper;
 import com.airline.account.mapper.et.SegmentMapper;
 import com.airline.account.mapper.et.TaxMapper;
 import com.airline.account.mapper.et.TicketMapper;
-import com.airline.account.mapper.et.UplMapper;
 import com.airline.account.model.acca.Relation;
-import com.airline.account.model.et.Segment;
-import com.airline.account.model.et.Tax;
-import com.airline.account.model.et.Ticket;
-import com.airline.account.model.et.Upl;
-import com.airline.account.utils.EtFormat;
+import com.airline.account.model.et.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -65,7 +61,7 @@ public class BatchServiceImpl implements BatchService {
     private TaxMapper taxMapper;
 
     @Autowired
-    private UplMapper uplMapper;
+    private EtUplMapper etUplMapper;
 
     @Override
     public void insertTicket(List<Ticket> tickets) throws Exception {
@@ -140,15 +136,15 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public void updateSegmentStatus(List<String[]> relations) throws Exception {
+    public void updateSegmentStatus(List<CouponStatus> relations) throws Exception {
         jdbcTemplate.batchUpdate(sqlUpdateSegmentStatus, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                String[] relation = relations.get(i);
-                ps.setString(1, relation[3]);
-                ps.setString(2, relation[0]);
-                ps.setString(3, relation[1]);
-                ps.setInt(4, EtFormat.intFormat(relation[2]));
+                CouponStatus relation = relations.get(i);
+                ps.setString(1, relation.getStatus());
+                ps.setString(2, relation.getDocumentCarrierIataNo());
+                ps.setString(3, relation.getDocumentNo());
+                ps.setInt(4, relation.getCouponNo());
             }
 
             @Override
@@ -186,11 +182,9 @@ public class BatchServiceImpl implements BatchService {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 Relation relation = exchanges.get(i);
-
-//                String ticketNo = relation.getPrimaryTicketNo();
-//                ps.setString(1, ticketNo.substring(0, 3));
-//                ps.setString(2, ticketNo.substring(3));
-
+                String ticketNo = relation.getPrimaryTicketNo();
+                ps.setString(1, ticketNo.substring(0, 3));
+                ps.setString(2, ticketNo.substring(3));
                 ps.setString(3, "");
                 ps.setString(4, relation.getIssueDate());
                 String orgTicketNo = relation.getOrgTicketNo();
@@ -209,23 +203,23 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public void insertUpl(List<Upl> uplList) throws Exception {
+    public void insertUpl(List<EtUpl> etUplList) throws Exception {
         try{
             jdbcTemplate.batchUpdate(sqlInsertUpl, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                    Upl upl = uplList.get(i);
-                    setPreparedStatement(preparedStatement, upl);
+                    EtUpl etUpl = etUplList.get(i);
+                    setPreparedStatement(preparedStatement, etUpl);
                 }
 
                 @Override
                 public int getBatchSize() {
-                    return uplList.size();
+                    return etUplList.size();
                 }
             });
         } catch(DuplicateKeyException e){
-            if(uplList.size() == 1) {
-                uplMapper.updateUpl(uplList.get(0));
+            if(etUplList.size() == 1) {
+                etUplMapper.updateUpl(etUplList.get(0));
             } else {
                 throw e;
             }
@@ -234,6 +228,7 @@ public class BatchServiceImpl implements BatchService {
 
     /**
      * 字符数组和SQL的占位符个数及顺序 必须一致
+     *
      * @param ps PreparedStatement
      * @param obj obj
      */
