@@ -27,9 +27,6 @@ import javax.annotation.Resource;
 @RequestMapping("/et")
 public class MoveController {
 
-//    @Autowired
-//    private MoveComponent moveComponent;
-
     @Autowired
     private SingleMoveComponent moveComponent;
 
@@ -73,7 +70,6 @@ public class MoveController {
     @ResponseBody
     @SteerableSchedule(id = "ACCA_SAL_IP_D", cron = "0 0 0 * * ?")
     public void moveDip() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
         CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_D", "ACCA_SAL_IP_D", sql);
@@ -89,7 +85,6 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_DP_D", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveDdp() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
         CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_D", "ACCA_SAL_DP_D", sql);
@@ -105,8 +100,6 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_IP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveMip() {
-        //值为1 适用主键重复时更新数据
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
         CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_M", "ACCA_SAL_IP_M", sql);
@@ -122,7 +115,6 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_DP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveMdp() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
         CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_M", "ACCA_SAL_DP_M", sql);
