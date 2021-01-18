@@ -2,7 +2,7 @@ package com.airline.account.service.acca;
 
 import com.airline.account.mapper.acca.RfdDpMapper;
 import com.airline.account.model.acca.RfdDp;
-import com.airline.account.model.et.CouponStatus;
+import com.airline.account.model.et.Relation;
 import com.airline.account.utils.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
@@ -23,7 +23,7 @@ public class RfdServiceImpl implements RfdService {
     private RfdDpMapper rfdDpMapper;
 
     @Override
-    public PageHandler createPageHandler(NormalPool<CouponStatus> pool, AllocateSource allocateSource) {
+    public PageHandler createPageHandler(NormalPool<Relation> pool, AllocateSource allocateSource) {
         return new PageHandler() {
             @Override
             public Integer count() {
@@ -36,8 +36,8 @@ public class RfdServiceImpl implements RfdService {
                 for (RfdDp rfdDp : relations) {
                     try {
                         pool.beforeAppend();
-                        CouponStatus status = new CouponStatus(rfdDp.getTransferTicketCompany(), rfdDp.getTransferTicketNo(), rfdDp.getCouponNo(), STATUS_EXCHANGE);
-                        pool.appendObject(status);
+                        Relation relation = new Relation(rfdDp.getTransferTicketCompany(), rfdDp.getTransferTicketNo(), rfdDp.getCouponNo(), STATUS_EXCHANGE);
+                        pool.appendObject(relation);
                     } catch (Exception ignore) {
 
                     }

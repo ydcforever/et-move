@@ -1,8 +1,11 @@
 package com.airline.account.utils;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -10,6 +13,8 @@ import java.text.ParseException;
  * @date 2020/11/29
  */
 public final class EtFormat implements Constant{
+
+    private static final String DATE_SPACER = "-";
 
     public static String taxCodeFormat(String taxCode) {
         if(taxCode.contains(TAX_XF)){
@@ -46,16 +51,28 @@ public final class EtFormat implements Constant{
         }
     }
 
+    public static String issueDateFormat(String date){
+        return dateFormat(date, "yyyyMMdd");
+    }
+
     public static String fltDateFormat(String date) {
         return "99999999".equals(date) ? "30001230" : dateFormat(date, "yyyyMMdd");
     }
 
-    private static String dateFormat(String date, String... parsePatterns) {
+    public static String dateFormat(String date, String targetFormat) {
         try {
-            DateUtils.parseDate(date, parsePatterns);
-            return date;
+            String[] a = new String[1];
+            if(date.contains(DATE_SPACER)) {
+                a[0] = "yyyy" + DATE_SPACER + "MM" + DATE_SPACER + "dd";
+            } else {
+                a[0] = "yyyyMMdd";
+            }
+            Date dt = DateUtils.parseDate(date, a);
+            return DateFormatUtils.format(dt, targetFormat);
         } catch (ParseException e) {
-            return "30001230";
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(3000, Calendar.DECEMBER, 30);
+            return DateFormatUtils.format(calendar, targetFormat);
         }
     }
 }

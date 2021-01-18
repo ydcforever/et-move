@@ -3,8 +3,6 @@ package com.airline.account.service.move;
 import com.airline.account.model.et.EtUpl;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  *
  * @author ydc
@@ -14,42 +12,10 @@ import java.util.List;
 public interface EtUplService {
 
     /**
-     * 国内日数据 承运
-     * @param airline 航司
-     * @param ticketNo 票号
-     * @param issueDate 出票日期
-     * @return List
-     */
-    List<EtUpl> moveDdpUpl(String airline, String ticketNo, String issueDate);
-
-    /**
-     * 国际日数据 承运
+     * 插入 ET UPL
      *
-     * @param airline 航司
-     * @param ticketNo 票号
-     * @param issueDate 出票日期
-     * @return List
+     * @param logGroup 日志组
+     * @param etUpl upl/iwb
      */
-    List<EtUpl> moveDipUpl(String airline, String ticketNo, String issueDate);
-
-    /**
-     * 国内月数据 承运
-     *
-     * @param airline 航司
-     * @param ticketNo 票号
-     * @param issueDate 出票日期
-     * @return List
-     */
-    List<EtUpl> moveMdpUpl(String airline, String ticketNo, String issueDate);
-
-    /**
-     * 国际月数据 承运
-     *
-     * @param airline 航司
-     * @param ticketNo 票号
-     * @param issueDate 出票日期
-     * @return List
-     */
-    List<EtUpl> moveMipUpl(String airline, String ticketNo, String issueDate);
-
+    void insertEtUplWithUpdate(String logGroup, EtUpl etUpl);
 }

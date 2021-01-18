@@ -4,7 +4,7 @@ import com.airline.account.mapper.acca.SalMapper;
 import com.airline.account.mapper.acca.TaxDiMapper;
 import com.airline.account.model.acca.Sal;
 import com.airline.account.model.acca.TaxIp;
-import com.airline.account.model.et.Exchange;
+import com.airline.account.model.et.Relation;
 import com.airline.account.model.et.Tax;
 import com.airline.account.service.acca.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class MoveServiceMipImpl implements MoveService{
     }
 
     @Override
-    public List<Exchange> getExchange(Sal primarySal) {
+    public List<Relation> getExchange(Sal primarySal) {
         return exchangeService.queryExchange(primarySal);
     }
 }

@@ -3,11 +3,9 @@ package com.airline.account.service.move;
 import com.airline.account.mapper.et.SegmentMapper;
 import com.airline.account.mapper.et.TaxMapper;
 import com.airline.account.mapper.et.TicketMapper;
-import com.airline.account.mapper.et.EtUplMapper;
 import com.airline.account.model.et.Segment;
 import com.airline.account.model.et.Tax;
 import com.airline.account.model.et.Ticket;
-import com.airline.account.model.et.EtUpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -20,9 +18,6 @@ import org.springframework.stereotype.Service;
 public class InsertServiceImpl implements InsertService {
 
     @Autowired
-    private EtUplMapper etUplMapper;
-
-    @Autowired
     private TicketMapper ticketMapper;
 
     @Autowired
@@ -30,15 +25,6 @@ public class InsertServiceImpl implements InsertService {
 
     @Autowired
     private TaxMapper taxMapper;
-
-    @Override
-    public void insertUplWithUpdate(EtUpl etUpl) throws Exception{
-        try{
-            etUplMapper.insertUpl(etUpl);
-        } catch (DuplicateKeyException e){
-            etUplMapper.updateUpl(etUpl);
-        }
-    }
 
     @Override
     public void insertTicketWithUpdate(Ticket ticket) throws Exception{

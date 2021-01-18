@@ -1,7 +1,7 @@
 package com.airline.account.service.acca;
 
 import com.airline.account.model.acca.Sal;
-import com.airline.account.model.et.Exchange;
+import com.airline.account.model.et.Relation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +18,5 @@ public interface ExchangeService extends StatusPageHandler{
      * @param primarySal 主票
      * @return list of exchange relation
      */
-    List<Exchange> queryExchange(Sal primarySal);
+    List<Relation> queryExchange(Sal primarySal);
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.airline.account.mapper.acca.ExchangeMapper">
-    <resultMap type="com.airline.account.model.et.Exchange" id="Exchange">
+    <resultMap type="com.airline.account.model.et.Relation" id="Relation">
         <result column="DOCUMENT_CARRIER_IATA_NO" property="documentCarrierIataNo" jdbcType="VARCHAR"/>
         <result column="DOCUMENT_NO" property="documentNo" jdbcType="VARCHAR"/>
         <result column="ISSUE_DATE" property="issueDate" jdbcType="VARCHAR"/>
-        <result column="ISSUE_IN_EXCH_CARRIER_IATA_NO" property="issueInExchCarrierIataNo" jdbcType="VARCHAR"/>
-        <result column="ISSUE_IN_EXCH_DOCUMENT_NO" property="issueInExchDocumentNo" jdbcType="VARCHAR"/>
-        <result column="EXCHANGE_STATUS" property="exchangeCouponUseIndicator" jdbcType="VARCHAR"/>
-        <result column="ORG_ISSUE_DATE" property="issueInExchDate" jdbcType="VARCHAR"/>
+        <result column="ISSUE_IN_EXCH_CARRIER_IATA_NO" property="operateDocumentCarrierIataNo" jdbcType="VARCHAR"/>
+        <result column="ISSUE_IN_EXCH_DOCUMENT_NO" property="operateDocumentNo" jdbcType="VARCHAR"/>
+        <result column="EXCHANGE_STATUS" property="couponUseIndicator" jdbcType="VARCHAR"/>
+        <result column="ORG_ISSUE_DATE" property="operateIssueDate" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="col">
@@ -17,18 +17,19 @@
         ISSUE_DATE, CNJ_NO,
         substr(ORG_TICKET_NO, 1, 3) as ISSUE_IN_EXCH_CARRIER_IATA_NO,
         substr(ORG_TICKET_NO, 4) as ISSUE_IN_EXCH_DOCUMENT_NO,
-        EXCHANGE_STATUS, ORG_ISSUE_DATE
+        EXCHANGE_STATUS,
+        ORG_ISSUE_DATE
     </sql>
 
 
-    <select id="queryExchange" resultMap="Exchange" parameterType="com.airline.account.model.acca.Sal">
+    <select id="queryExchange" resultMap="Relation" parameterType="com.airline.account.model.acca.Sal">
         select
         <include refid="col"/>
         from ITAX_AUDITOR_EXCHANGE t
         where t.CNJ_TICKET_NO = #{airline3code} || #{ticketNo}
     </select>
 
-    <select id="queryExchangeByAllocate" resultMap="Exchange" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryExchangeByAllocate" resultMap="Relation" parameterType="com.airline.account.utils.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select
         <include refid="col"/>

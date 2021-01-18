@@ -4,13 +4,14 @@ import com.airline.account.mapper.acca.SalMapper;
 import com.airline.account.mapper.et.MoveLogMapper;
 import com.airline.account.model.acca.Sal;
 import com.airline.account.model.et.*;
-import com.airline.account.service.move.BatchService;
+import com.airline.account.service.move.ExchangeUseService;
+import com.airline.account.service.move.InsertService;
 import com.airline.account.service.move.MoveService;
 import com.airline.account.service.move.StatusService;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
-import com.fate.pool.normal.CascadeNormalPool;
-import com.fate.pool.normal.CascadeNormalPoolFactory;
+import com.fate.pool.normal.CascadeSingle;
+import com.fate.pool.normal.CascadeSingleFactory;
 import com.fate.pool.normal.NormalPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,22 +25,25 @@ import static com.airline.account.utils.MatchUtil.*;
 
 /**
  * @author ydc
- * @date 2020/12/29.
+ * @date 2021/1/15.
  */
 @Component
-public class MoveComponent implements Constant {
+public class SingleMoveComponent {
 
     @Autowired
-    private BatchService batchService;
+    private InsertService insertService;
 
     @Autowired
     private MoveLogMapper moveLogMapper;
 
     @Autowired
-    private SalMapper salMapper;
+    private ExchangeUseService exchangeUseService;
 
     @Autowired
     private StatusService statusService;
+
+    @Autowired
+    private SalMapper salMapper;
 
     /**
      * 用于批量更新 E/R/U/I 状态
@@ -61,7 +65,28 @@ public class MoveComponent implements Constant {
         });
     }
 
-    public PageHandler createSalPageHandler(CascadeNormalPoolFactory poolFactory, AllocateSource allocateSource, MoveService moveService) {
+    /**
+     * 只有国际改签关系
+     * !!! 国内改签请修改MoveService实现
+     *
+     * @return 票相关对象池
+     */
+    public CascadeSingleFactory getSalPoolFactory() {
+        CascadeSingleFactory poolFactory = new CascadeSingleFactory();
+        CascadeSingle<Ticket> ticketPool = new CascadeSingle<>(ticket -> insertService.insertTicketWithUpdate(ticket));
+        poolFactory.addPool(POOL_KEY_TICKET, ticketPool);
+        CascadeSingle<Segment> segmentPool = new CascadeSingle<>(segment -> insertService.insertSegmentWithUpdate(segment));
+        poolFactory.addPool(POOL_KEY_SEGMENT, segmentPool);
+        CascadeSingle<Tax> taxPool = new CascadeSingle<>(tax -> insertService.insertTaxWithUpdate(tax));
+        poolFactory.addPool(POOL_KEY_TAX, taxPool);
+        CascadeSingle<Relation> exchangePool = new CascadeSingle<>(relation -> {
+            statusService.updateSegmentStatus(relation);
+        });
+        poolFactory.addPool(POOL_KEY_EXCHANGE, exchangePool);
+        return poolFactory;
+    }
+
+    public PageHandler createSalPageHandler(CascadeSingleFactory poolFactory, AllocateSource allocateSource, MoveService moveService) {
         return new PageHandler() {
             @Override
             public Integer count() {
@@ -78,66 +103,8 @@ public class MoveComponent implements Constant {
         };
     }
 
-    /**
-     * 只有国际改签关系
-     * !!! 国内改签请修改MoveService实现
-     *
-     * @param ticketSize 批处理票数
-     * @param batchSize  相关信息批处理数
-     * @return 票相关对象池
-     */
-    public CascadeNormalPoolFactory getSalPoolFactory(Integer ticketSize, Integer batchSize) {
-        CascadeNormalPoolFactory poolFactory = new CascadeNormalPoolFactory(ticketSize);
-        CascadeNormalPool<Ticket> ticketPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertTicket(list);
-            } catch (Exception e) {
-                Ticket ticket = list.get(0);
-                String doc = ticket.getDocumentCarrierIataNo() + ticket.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_TICKET, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
-            }
-        });
-        poolFactory.addPool(POOL_KEY_TICKET, ticketPool);
-
-        CascadeNormalPool<Segment> segmentPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertSegment(list);
-            } catch (Exception e) {
-                Segment segment = list.get(0);
-                String doc = segment.getDocumentCarrierIataNo() + segment.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_SEGMENT, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
-            }
-        });
-        poolFactory.addPool(POOL_KEY_SEGMENT, segmentPool);
-
-        CascadeNormalPool<Tax> taxPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertTax(list);
-            } catch (Exception e) {
-                Tax tax = list.get(0);
-                String doc = tax.getDocumentCarrierIataNo() + tax.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_TAX, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
-            }
-        });
-        poolFactory.addPool(POOL_KEY_TAX, taxPool);
-
-        CascadeNormalPool<Relation> exchangePool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                statusService.updateSegmentStatus(list);
-            } catch (Exception e) {
-                MoveLog log = new MoveLog(POOL_KEY_EXCHANGE, "", e.getMessage());
-                moveLogMapper.insertLog(log);
-            }
-        });
-        poolFactory.addPool(POOL_KEY_EXCHANGE, exchangePool);
-        return poolFactory;
-    }
-
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void move(CascadeNormalPoolFactory poolFactory, Sal primarySal, MoveService moveService, String sourceName){
+    public void move(CascadeSingleFactory poolFactory, Sal primarySal, MoveService moveService, String sourceName) {
         List<Sal> salList = moveService.getSal(primarySal);
         String cnjTktString = getCnjTktString(salList);
         for (Sal s : salList) {
@@ -151,6 +118,8 @@ public class MoveComponent implements Constant {
             //改签
             List<Relation> exchanges = moveService.getExchange(primarySal);
             for (Relation exchange : exchanges) {
+                //改签关系插入
+                exchangeUseService.insertExchangeWithUpdate(ERROR_EXCHANGE2ET, exchange);
                 String[] status = exchange.getCouponUseIndicator().split("");
                 for (String cpnNo : status) {
                     if (!COUPON_INVALID.equals(cpnNo)) {
@@ -163,7 +132,7 @@ public class MoveComponent implements Constant {
         }
 
         try {
-            poolFactory.afterAllAppend();
+            poolFactory.finalHandle();
         } catch (Exception e) {
             String tktn = primarySal.getAirline3code() + primarySal.getFirstTicketNo();
             MoveLog log = new MoveLog(ERROR_SAL, tktn, e.getMessage());
@@ -171,7 +140,7 @@ public class MoveComponent implements Constant {
         }
     }
 
-    private static void addSeg(CascadeNormalPoolFactory factory, Sal sal) {
+    private static void addSeg(CascadeSingleFactory factory, Sal sal) {
         if (isNumber(sal.getCouponUseIndicator())) {
             addNumberSeg(factory, sal);
         } else {
@@ -182,7 +151,7 @@ public class MoveComponent implements Constant {
     /**
      * 国内航段映射
      */
-    private static void addCharSeg(CascadeNormalPoolFactory factory, Sal sal) {
+    private static void addCharSeg(CascadeSingleFactory factory, Sal sal) {
         String[] status = sal.getCouponUseIndicator().split("");
         for (int i = 0, len = status.length; i < len; i++) {
             if (!STATUS_VOID.equals(status[i])) {
@@ -203,7 +172,7 @@ public class MoveComponent implements Constant {
         }
     }
 
-    private static void addNumberSeg(CascadeNormalPoolFactory factory, Sal sal) {
+    private static void addNumberSeg(CascadeSingleFactory factory, Sal sal) {
         String[] status = sal.getCouponUseIndicator().split("");
         for (String s : status) {
             if ("1".equals(s)) {
@@ -225,4 +194,5 @@ public class MoveComponent implements Constant {
     private static boolean isNumber(String str) {
         return str.matches(".*[0-9]+.*");
     }
+
 }

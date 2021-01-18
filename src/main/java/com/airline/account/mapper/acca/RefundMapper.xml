@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.airline.account.mapper.acca.RefundMapper">
 
-    <resultMap type="com.airline.account.model.acca.Relation" id="RRelation">
+    <resultMap type="com.airline.account.model.acca.Refund" id="Refund">
         <result column="CNJ_TICKET_NO" property="primaryTicketNo" jdbcType="VARCHAR"/>
         <result column="ISSUE_DATE" property="issueDate" jdbcType="VARCHAR"/>
         <result column="TICKET_NO_STRING" property="ticketNoStr" jdbcType="VARCHAR"/>
@@ -13,7 +13,7 @@
         CNJ_TICKET_NO, ISSUE_DATE, TICKET_NO_STRING, REFUND_STATUS
     </sql>
 
-    <select id="queryRefundByAllocate" resultMap="RRelation" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryRefundByAllocate" resultMap="Refund" parameterType="com.airline.account.utils.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select
         <include refid="col"/>

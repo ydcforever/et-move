@@ -1,9 +1,6 @@
 package com.airline.account.utils;
 
-import com.airline.account.model.acca.Sal;
-import com.airline.account.model.acca.TaxDp;
-import com.airline.account.model.acca.TaxIp;
-import com.airline.account.model.acca.Upl;
+import com.airline.account.model.acca.*;
 import com.airline.account.model.et.EtUpl;
 import com.airline.account.model.et.Segment;
 import com.airline.account.model.et.Tax;
@@ -19,6 +16,42 @@ import java.util.Map;
  * @date 2020/12/29.
  */
 public final class MatchUtil implements Constant{
+
+    public static EtUpl getUpl(Iwb iwb){
+        EtUpl etUpl = new EtUpl();
+        etUpl.setDocumentCarrierIataNo(iwb.getAirline3code());
+        etUpl.setDocumentNo(iwb.getTicketNo());
+        etUpl.setIssueDate(iwb.getTicketDate());
+        etUpl.setCouponNo(iwb.getCouponNo());
+        etUpl.setAgentIataNo(iwb.getAgentCode());
+        etUpl.setCarrierO(iwb.getCarrierCode());
+        etUpl.setFlightNo(iwb.getFlightNo());
+        etUpl.setDeptAirport(iwb.getDeptAirport());
+        etUpl.setArrAirport(iwb.getArrAirport());
+        etUpl.setMainClass(iwb.getMainClass());
+        etUpl.setSubClass(iwb.getSubClass());
+        etUpl.setFareBasis(iwb.getFareBasis());
+        etUpl.setSaleCurrency(iwb.getSaleCurrency());
+        etUpl.setPaxType(EtFormat.psgTypeFormat(iwb.getPaxType()));
+        etUpl.setPaxQty(iwb.getPaxQty());
+        etUpl.setLuggageHeight(iwb.getLuggageHeight());
+        etUpl.setGrossIncome(iwb.getGrossIncome());
+        etUpl.setGrossIncomeSc(iwb.getGrossIncomeSc());
+        etUpl.setNetIncome(iwb.getNetIncome());
+        etUpl.setNetIncomeSc(iwb.getNetIncomeSc());
+        etUpl.setAgentCommissionRate(iwb.getCommissionRate());
+        etUpl.setAgentCommission(iwb.getCommission());
+        etUpl.setAgentCommissionSc(iwb.getCommissionSc());
+        etUpl.setBggPricedFee(iwb.getBggPricedFee());
+        etUpl.setBggPricedFeeSc(iwb.getBggPricedFeeSc());
+        etUpl.setAirportTax(iwb.getAirportTax());
+        etUpl.setAirportTaxSc(iwb.getAirportTaxSc());
+        etUpl.setFuelSurcharge(iwb.getFuelSurcharge());
+        etUpl.setFuelSurchargeSc(iwb.getFuelSurchargeSc());
+        etUpl.setMktCarrierCode(iwb.getMktCarrierCd());
+        etUpl.setMktFlightNo(iwb.getMktFlightNo());
+        return etUpl;
+    }
 
     public static List<EtUpl> getUpl(List<Upl> uplList){
         List<EtUpl> list = new ArrayList<>();
@@ -58,7 +91,7 @@ public final class MatchUtil implements Constant{
         etUpl.setFfpMemberNo(upl.getFfpMemberNo());
         etUpl.setTourCode(upl.getTourCode());
         etUpl.setChartereFlag(upl.getChartereFlag());
-        etUpl.setPaxType(upl.getPaxType());
+        etUpl.setPaxType(EtFormat.psgTypeFormat(upl.getPaxType()));
         etUpl.setPaxQty(upl.getPaxQty());
         etUpl.setLuggageHeight(upl.getLuggageHeight());
         etUpl.setGrossIncome(upl.getGrossIncome());

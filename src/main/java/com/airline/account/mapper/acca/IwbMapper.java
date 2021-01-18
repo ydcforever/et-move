@@ -24,9 +24,8 @@ public interface IwbMapper {
     /**
      * 对外开账分配总数
      *
-     * @param allocateSource
+     * @param allocateSource 资源分配
      * @return total of current day in this iwb file
      */
     Integer countIwbByAllocate(AllocateSource allocateSource);
-
 }

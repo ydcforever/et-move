@@ -51,7 +51,7 @@ public class Iwb {
 
     private String paxType;
 
-    private double paxQty;
+    private Integer paxQty;
 
     private double luggageHeight;
 

@@ -1,6 +1,6 @@
 package com.airline.account.service.acca;
 
-import com.airline.account.model.et.CouponStatus;
+import com.airline.account.model.et.Relation;
 import com.airline.account.utils.AllocateSource;
 import com.airline.account.utils.Constant;
 import com.fate.piece.PageHandler;
@@ -19,7 +19,7 @@ public interface StatusPageHandler extends Constant {
      * @param allocateSource 资源分配
      * @return 分页处理
      */
-    PageHandler createPageHandler(NormalPool<CouponStatus> pool, AllocateSource allocateSource);
+    PageHandler createPageHandler(NormalPool<Relation> pool, AllocateSource allocateSource);
 
 
 }

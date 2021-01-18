@@ -25,7 +25,7 @@ public class MoveLog {
     public MoveLog(String airlineCode, String firstTicketNo, String excp) {
         this.airlineCode = airlineCode;
         this.firstTicketNo = firstTicketNo;
-        this.excp = StringUtils.isBlank(excp) ? "" : excp.length() > 2000 ? excp.trim().substring(0, 1500) : excp;
+        this.excp = StringUtils.isBlank(excp) ? "" : excp.length() > 2000 ? excp.substring(0, 1500) : excp;
         this.createTime = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
     }
 }

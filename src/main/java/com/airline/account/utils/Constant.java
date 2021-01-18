@@ -6,6 +6,20 @@ package com.airline.account.utils;
  */
 public interface Constant {
 
+    String ERROR_IWB2UPL = "MOVE_IWB2UPL";
+
+    String ERROR_IWB_STATUS = "UPDATE_IWB_STATUS";
+
+    String ERROR_UPL2ET = "MOVE_UPL2ET";
+
+    String ERROR_REFUND2ET = "MOVE_REFUND2ET";
+
+    String ERROR_REF_DP2ET = "MOVE_REF_DP2ET";
+
+    String ERROR_EXCHANGE2ET = "MOVE_EXCHANGE2ET";
+
+    String ERROR_SAL = "MOVE_SAL";
+
     String SYS_DP = "DP";
 
     /**
@@ -56,7 +70,7 @@ public interface Constant {
     /**
      * Flown
      */
-    String STATUS_FLOWN = "U";
+    String STATUS_FLOWN = "F";
 
     /**
      * Inward Billing

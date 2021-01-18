@@ -4,8 +4,9 @@ import com.airline.account.mapper.et.EtUplMapper;
 import com.airline.account.mapper.et.SegmentMapper;
 import com.airline.account.mapper.et.TaxMapper;
 import com.airline.account.mapper.et.TicketMapper;
-import com.airline.account.model.acca.Relation;
-import com.airline.account.model.et.*;
+import com.airline.account.model.et.Segment;
+import com.airline.account.model.et.Tax;
+import com.airline.account.model.et.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -131,113 +132,6 @@ public class BatchServiceImpl implements BatchService {
                 taxMapper.updateTax(taxes.get(0));
             } else {
                 throw e;
-            }
-        }
-    }
-
-    @Override
-    public void updateSegmentStatus(List<CouponStatus> relations) throws Exception {
-        jdbcTemplate.batchUpdate(sqlUpdateSegmentStatus, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                CouponStatus relation = relations.get(i);
-                ps.setString(1, relation.getStatus());
-                ps.setString(2, relation.getDocumentCarrierIataNo());
-                ps.setString(3, relation.getDocumentNo());
-                ps.setInt(4, relation.getCouponNo());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return relations.size();
-            }
-        });
-    }
-
-    @Override
-    public void insertRefund(List<String[]> refunds) throws Exception {
-        jdbcTemplate.batchUpdate(sqlInsertRefund, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                String[] refund = refunds.get(i);
-                setPreparedStatement(preparedStatement, refund);
-            }
-
-            @Override
-            public int getBatchSize() {
-                return refunds.size();
-            }
-        });
-    }
-
-    /**
-     * 连票查询处理--待办
-     *
-     * @param exchanges list of exchange
-     * @throws Exception e
-     */
-    @Override
-    public void insertExchange(List<Relation> exchanges) throws Exception {
-        jdbcTemplate.batchUpdate(sqlInsertExchange, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Relation relation = exchanges.get(i);
-                String ticketNo = relation.getPrimaryTicketNo();
-                ps.setString(1, ticketNo.substring(0, 3));
-                ps.setString(2, ticketNo.substring(3));
-                ps.setString(3, "");
-                ps.setString(4, relation.getIssueDate());
-                String orgTicketNo = relation.getOrgTicketNo();
-                ps.setString(5, orgTicketNo.substring(0, 3));
-                ps.setString(6, orgTicketNo.substring(3));
-                ps.setString(7, "");
-                ps.setString(8, relation.getOrgIssueDate());
-                ps.setString(9, relation.getCouponStatus());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return exchanges.size();
-            }
-        });
-    }
-
-    @Override
-    public void insertUpl(List<EtUpl> etUplList) throws Exception {
-        try{
-            jdbcTemplate.batchUpdate(sqlInsertUpl, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                    EtUpl etUpl = etUplList.get(i);
-                    setPreparedStatement(preparedStatement, etUpl);
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return etUplList.size();
-                }
-            });
-        } catch(DuplicateKeyException e){
-            if(etUplList.size() == 1) {
-                etUplMapper.updateUpl(etUplList.get(0));
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * 字符数组和SQL的占位符个数及顺序 必须一致
-     *
-     * @param ps PreparedStatement
-     * @param obj obj
-     */
-    private static void setPreparedStatement(PreparedStatement ps, String[] obj){
-        for(int i = 0, len = obj.length; i < len; i++) {
-            try {
-                ps.setString(i + 1, obj[i]);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
             }
         }
     }

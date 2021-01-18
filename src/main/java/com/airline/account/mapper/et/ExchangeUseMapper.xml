@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.et.ExchangeUseMapper">
+    <resultMap type="com.airline.account.model.et.Relation" id="Relation">
+        <result column="DOCUMENT_CARRIER_IATA_NO" property="documentCarrierIataNo" jdbcType="VARCHAR"/>
+        <result column="DOCUMENT_NO" property="documentNo" jdbcType="VARCHAR"/>
+        <result column="ISSUE_DATE" property="issueDate" jdbcType="VARCHAR"/>
+        <result column="ISSUE_IN_EXCH_CARRIER_IATA_NO" property="operateDocumentCarrierIataNo" jdbcType="VARCHAR"/>
+        <result column="ISSUE_IN_EXCH_DOCUMENT_NO" property="operateDocumentNo" jdbcType="VARCHAR"/>
+        <result column="EXCHANGE_COUPON_USE_INDICATOR" property="couponUseIndicator" jdbcType="VARCHAR"/>
+        <result column="ORG_ISSUE_DATE" property="operateIssueDate" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertExchangeUse" parameterType="com.airline.account.model.et.Relation">
+        insert into ET_EXCHANGE_COUPON_USE
+        (<include refid="col"/>)
+        values (
+        #{documentCarrierIataNo, jdbcType=VARCHAR},
+        #{documentNo, jdbcType=VARCHAR},
+        to_date(#{issueDate, jdbcType=DATE}, 'yyyy-MM-dd'),
+        #{operateDocumentCarrierIataNo, jdbcType=VARCHAR},
+        #{operateDocumentNo, jdbcType=VARCHAR},
+        to_date(#{operateIssueDate, jdbcType=DATE}, 'yyyy-MM-dd'),
+        #{couponUseIndicator, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateExchangeUse" parameterType="com.airline.account.model.et.Exchange">
+        update ET_EXCHANGE_COUPON_USE t
+        set t.EXCHANGE_COUPON_USE_INDICATOR = #{couponUseIndicator, jdbcType=VARCHAR}
+        where t.DOCUMENT_CARRIER_IATA_NO = #{documentCarrierIataNo, jdbcType=VARCHAR}
+        and t.DOCUMENT_NO = #{documentNo, jdbcType=VARCHAR}
+        and t.ISSUE_IN_EXCH_CARRIER_IATA_NO = #{operateDocumentCarrierIataNo, jdbcType=VARCHAR}
+        and t.ISSUE_IN_EXCH_DOCUMENT_NO = #{operateDocumentNo, jdbcType=VARCHAR}
+    </update>
+
+    <sql id="col">
+        DOCUMENT_CARRIER_IATA_NO,
+        DOCUMENT_NO,
+        ISSUE_DATE,
+        ISSUE_IN_EXCH_CARRIER_IATA_NO,
+        ISSUE_IN_EXCH_DOCUMENT_NO,
+        ISSUE_IN_EXCH_DATE,
+        EXCHANGE_COUPON_USE_INDICATOR
+    </sql>
+</mapper>

@@ -1,13 +1,13 @@
 package com.airline.account.controller;
 
-import com.airline.account.model.et.CouponStatus;
+import com.airline.account.model.et.Relation;
 import com.airline.account.service.acca.*;
 import com.airline.account.service.move.LoadSourceService;
 import com.airline.account.service.move.MoveService;
 import com.airline.account.utils.AllocateSource;
-import com.fate.pool.normal.CascadeNormalPoolFactory;
-import com.airline.account.utils.MoveComponent;
+import com.airline.account.utils.SingleMoveComponent;
 import com.fate.piece.PageHandler;
+import com.fate.pool.normal.CascadeSingleFactory;
 import com.fate.pool.normal.NormalPool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 public class MoveControllerTest {
 
     @Autowired
-    private MoveComponent moveComponent;
+    private SingleMoveComponent moveComponent;
 
     @Resource(name = "moveDdpService")
     private MoveService moveDdpService;
@@ -60,7 +60,8 @@ public class MoveControllerTest {
 
     @Test
     public void moveDip() {
-        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_D", "ACCA_SAL_IP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDipService);
@@ -70,7 +71,8 @@ public class MoveControllerTest {
 
     @Test
     public void moveMip() {
-        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_M", "ACCA_SAL_IP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMipService);
@@ -80,7 +82,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveRefund() {
-        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "Refund");
+        NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "Refund");
         String sql = "select distinct t.issue_date from ITAX_AUDITOR_REFUND t where t.ori_source = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ITAX_AUDITOR_REFUND", "Refund", sql);
         PageHandler pageHandler = refundService.createPageHandler(normalPool, allocateSource);
@@ -90,7 +92,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveUplDpM() {
-        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_DP_M");
+        NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "ACCA_UPL_DP_M");
         String sql = "select distinct t.ticket_date from ACCA_UPL_DP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_UPL_DP_M", "ACCA_UPL_DP_M", sql);
         PageHandler pageHandler = uplService.createPageHandler(normalPool, allocateSource);
@@ -100,7 +102,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveRefDp() {
-        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_REF_DP_M");
+        NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "ACCA_REF_DP_M");
         String sql = "select distinct t.refund_date from ACCA_REF_DP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_REF_DP_M", "ACCA_REF_DP_M", sql);
         PageHandler pageHandler = refService.createPageHandler(normalPool, allocateSource);
@@ -110,7 +112,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveExchange() {
-        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "Exchange");
+        NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "Exchange");
         String sql = "select distinct t.issue_date from ITAX_AUDITOR_EXCHANGE t where t.ori_source = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ITAX_AUDITOR_EXCHANGE", "Exchange", sql);
         PageHandler pageHandler = exchangeService.createPageHandler(normalPool, allocateSource);
@@ -120,7 +122,8 @@ public class MoveControllerTest {
 
     @Test
     public void moveDdp() {
-        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
+        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_D", "ACCA_SAL_DP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDdpService);
@@ -130,7 +133,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveIwbDpM() {
-        NormalPool<CouponStatus> normalPool = moveComponent.getRelationPool(1000, "ACCA_IWB_DP_M");
+        NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "ACCA_IWB_DP_M");
         String sql = "select distinct t.ticket_date from ACCA_IWB_DP_M t where t.source_name = ? ";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_IWB_DP_M", "ACCA_IWB_DP_M", sql);
         PageHandler pageHandler = iwbService.createPageHandler(normalPool, allocateSource);

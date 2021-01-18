@@ -39,7 +39,7 @@
     </resultMap>
 
     <insert id="insertSegment" parameterType="com.airline.account.model.et.Segment">
-        insert ET_FLIGHT_COUPON
+        insert into ET_FLIGHT_COUPON
         (
         <include refid="col"/>
         )

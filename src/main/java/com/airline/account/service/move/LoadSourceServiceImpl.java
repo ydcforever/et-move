@@ -27,7 +27,7 @@ public class LoadSourceServiceImpl implements LoadSourceService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private static String FINISHED = "Y";
+    private static final String FINISHED = "Y";
 
     @Override
     public void executeByFile(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler) {
@@ -41,7 +41,7 @@ public class LoadSourceServiceImpl implements LoadSourceService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            updateStatus(config, file, FINISHED);
+//            updateStatus(config, file, FINISHED);
         }
     }
 
@@ -61,7 +61,7 @@ public class LoadSourceServiceImpl implements LoadSourceService {
                     e.printStackTrace();
                 }
             }
-            updateStatus(config, file, FINISHED);
+//            updateStatus(config, file, FINISHED);
         }
     }
 

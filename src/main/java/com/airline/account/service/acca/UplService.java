@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
  * @date 2021/1/8.
  */
 @Service
-public interface UplService extends StatusPageHandler{
+public interface UplService extends StatusPageHandler {
 
 }

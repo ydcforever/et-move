@@ -1,6 +1,6 @@
 package com.airline.account.mapper.acca;
 
-import com.airline.account.model.acca.Relation;
+import com.airline.account.model.acca.Refund;
 import com.airline.account.utils.AllocateSource;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +19,7 @@ public interface RefundMapper {
      * @param allocateSource 资源分配
      * @return list of refund relation
      */
-    List<Relation> queryRefundByAllocate(AllocateSource allocateSource);
+    List<Refund> queryRefundByAllocate(AllocateSource allocateSource);
 
     /**
      * 承运资源分配总数
@@ -28,5 +28,4 @@ public interface RefundMapper {
      * @return total of current day in this refund file
      */
     Integer countRefundByAllocate(AllocateSource allocateSource);
-
 }

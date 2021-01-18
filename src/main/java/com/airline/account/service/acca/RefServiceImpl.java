@@ -2,7 +2,8 @@ package com.airline.account.service.acca;
 
 import com.airline.account.mapper.acca.RefDpMapper;
 import com.airline.account.model.acca.RefDp;
-import com.airline.account.model.et.CouponStatus;
+import com.airline.account.model.et.Relation;
+import com.airline.account.service.move.RefundUseService;
 import com.airline.account.utils.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.airline.account.utils.EtFormat.dateFormat;
+
 
 /**
  * @author ydc
@@ -22,8 +26,11 @@ public class RefServiceImpl implements RefService {
     @Autowired
     private RefDpMapper refDpMapper;
 
+    @Autowired
+    private RefundUseService refundUseService;
+
     @Override
-    public PageHandler createPageHandler(NormalPool<CouponStatus> pool, AllocateSource allocateSource) {
+    public PageHandler createPageHandler(NormalPool<Relation> pool, AllocateSource allocateSource) {
         return new PageHandler() {
             @Override
             public Integer count() {
@@ -34,11 +41,15 @@ public class RefServiceImpl implements RefService {
             public void callback(PagePiece pagePiece) {
                 List<RefDp> relations = refDpMapper.queryRefDpByAllocate(allocateSource);
                 for (RefDp refDp : relations) {
+                    //插入ref
+                    Relation relation = new Relation(refDp.getRefundOwnerCompany(), refDp.getRefundTicketNo(),
+                            refDp.getRefundRelationNo(), STATUS_REFUND);
+                    relation.setOperateIssueDate(dateFormat(refDp.getRefundDate(), "yyyy-MM-dd"));
+                    relation.setCouponUseIndicator(refDp.getRefundRelationNo() + "");
+                    refundUseService.insertRefundWithUpdate(ERROR_REF_DP2ET, relation);
                     try {
                         pool.beforeAppend();
-                        CouponStatus status = new CouponStatus(refDp.getRefundOwnerCompany(), refDp.getRefundTicketNo(),
-                                refDp.getRefundRelationNo(), STATUS_REFUND);
-                        pool.appendObject(status);
+                        pool.appendObject(relation);
                     } catch (Exception ignore) {
 
                     }

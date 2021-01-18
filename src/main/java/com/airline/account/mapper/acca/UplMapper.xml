@@ -64,35 +64,6 @@
         <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <sql id="whereClause">
-        where t.airline_3code = #{cxr}
-        and t.ticket_no = #{doc}
-    </sql>
-
-    <select id="queryDDpUpl" resultMap="Upl">
-        select <include refid="showCol"/>
-        from ACCA_UPL_DP_D t
-        <include refid="whereClause"/>
-    </select>
-
-    <select id="queryDIpUpl" resultMap="Upl">
-        select <include refid="showCol"/>
-        from ACCA_UPL_IP_D t
-        <include refid="whereClause"/>
-    </select>
-
-    <select id="queryMDpUpl" resultMap="Upl">
-        select <include refid="showCol"/>
-        from ACCA_UPL_DP_M t
-        <include refid="whereClause"/>
-    </select>
-
-    <select id="queryMIpUpl" resultMap="Upl">
-        select <include refid="showCol"/>
-        from ACCA_UPL_IP_M t
-        <include refid="whereClause"/>
-    </select>
-
     <select id="queryUplByAllocate" resultMap="Upl" parameterType="com.airline.account.utils.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select AIRLINE_3CODE,TICKET_NO,COUPON_NO,TICKET_DATE
