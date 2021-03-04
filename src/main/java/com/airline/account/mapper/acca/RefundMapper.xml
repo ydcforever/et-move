@@ -13,24 +13,24 @@
         CNJ_TICKET_NO, ISSUE_DATE, TICKET_NO_STRING, REFUND_STATUS
     </sql>
 
-    <select id="queryRefundByAllocate" resultMap="Refund" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryRefundByAllocate" resultMap="Refund" parameterType="com.airline.account.model.allocate.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select
         <include refid="col"/>
         from ITAX_AUDITOR_REFUND t
         where t.ORI_SOURCE = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.issue_date = #{issueDate}
         </if>
         <include refid="OraclePagingSuffix"/>
     </select>
 
-    <select id="countRefundByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="countRefundByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.model.allocate.AllocateSource">
         select count(*)
         from ITAX_AUDITOR_REFUND t
         where t.ORI_SOURCE = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.issue_date = #{issueDate}
         </if>
     </select>
 

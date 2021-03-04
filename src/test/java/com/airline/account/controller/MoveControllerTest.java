@@ -1,14 +1,21 @@
 package com.airline.account.controller;
 
+import com.airline.account.model.allocate.AllocateSource;
 import com.airline.account.model.et.Relation;
 import com.airline.account.service.acca.*;
+import com.airline.account.service.allocate.StatisticService;
+import com.airline.account.service.allocate.ThreadLogService;
+import com.airline.account.service.allocate.WorkService;
 import com.airline.account.service.move.LoadSourceService;
 import com.airline.account.service.move.MoveService;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.utils.AllocateRunnable;
+import com.airline.account.utils.Handler;
 import com.airline.account.utils.SingleMoveComponent;
 import com.fate.piece.PageHandler;
-import com.fate.pool.normal.CascadeSingleFactory;
+import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.fate.pool.normal.NormalPool;
+import com.fate.thread.ResourcePoolUtil;
+import com.fate.thread.ResourceRunnable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author ydc
@@ -58,10 +67,18 @@ public class MoveControllerTest {
     @Autowired
     private IwbService iwbService;
 
+    @Autowired
+    private ThreadLogService threadLogService;
+
+    @Autowired
+    private StatisticService statisticService;
+
+    @Autowired
+    private WorkService workService;
+
     @Test
     public void moveDip() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_D", "ACCA_SAL_IP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDipService);
@@ -71,13 +88,53 @@ public class MoveControllerTest {
 
     @Test
     public void moveMip() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_M", "ACCA_SAL_IP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMipService);
         loadSourceService.executeByDate(poolFactory, allocateSource, pageHandler);
         poolFactory.destroy();
+    }
+
+    @Test
+    public void moveMdp() {
+        String sql = "select distinct t.issue_date from ACCA_SAL_DP_M t where t.source_name = ? order by t.issue_date";
+        AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_M", "ACCA_SAL_DP_M", sql);
+        LinkedBlockingQueue<AllocateSource> queue = loadSourceService.getResourceByDate(allocateSource);
+        ThreadPoolExecutor executor = ResourcePoolUtil.createThreadPool(queue, new ResourceRunnable<AllocateSource>() {
+            @Override
+            public Runnable generate(LinkedBlockingQueue<AllocateSource> resource, int sequence) {
+                CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
+                return new AllocateRunnable(queue, String.valueOf(sequence), threadLogService, poolFactory, new Handler() {
+                    @Override
+                    public PageHandler generate(AllocateSource allocateSource) {
+                        return moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMdpService);
+                    }
+                });
+            }
+        }, 4, 60);
+        ResourcePoolUtil.shutdown(executor, 600);
+    }
+
+    @Test
+    public void moveMdpNew() {
+        AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_M");
+//        allocateSource.setDateColName("退票或有不同");
+        LinkedBlockingQueue<AllocateSource> queue = statisticService.getResource(allocateSource);
+        ThreadPoolExecutor executor = ResourcePoolUtil.createThreadPool(queue, new ResourceRunnable<AllocateSource>() {
+            @Override
+            public Runnable generate(LinkedBlockingQueue<AllocateSource> resource, int sequence) {
+                CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
+                return new AllocateRunnable(queue, String.valueOf(sequence), threadLogService, poolFactory, new Handler() {
+                    @Override
+                    public PageHandler generate(AllocateSource allocateSource) {
+                        return moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMdpService);
+                    }
+                });
+            }
+        }, 4, 60);
+        ResourcePoolUtil.shutdown(executor, 600);
+        workService.updateWorkRunning(allocateSource.getTableName());
     }
 
     @Test
@@ -122,8 +179,7 @@ public class MoveControllerTest {
 
     @Test
     public void moveDdp() {
-//        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory(1000, 1);
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_D", "ACCA_SAL_DP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDdpService);

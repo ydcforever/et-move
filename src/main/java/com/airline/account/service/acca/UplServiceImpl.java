@@ -5,7 +5,7 @@ import com.airline.account.model.acca.Upl;
 import com.airline.account.model.et.EtUpl;
 import com.airline.account.model.et.Relation;
 import com.airline.account.service.move.EtUplService;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.airline.account.utils.MatchUtil;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
@@ -42,6 +42,7 @@ public class UplServiceImpl implements UplService {
                 for (Upl upl : relations) {
                     //插入Et Upl
                     EtUpl etUpl = MatchUtil.getUpl(upl);
+                    //精细化切点
                     etUplService.insertEtUplWithUpdate(ERROR_UPL2ET, etUpl);
 
                     try {

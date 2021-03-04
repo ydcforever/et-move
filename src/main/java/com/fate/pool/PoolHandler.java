@@ -14,5 +14,16 @@ public interface PoolHandler<T> {
      * @param list pool Object
      * @throws Exception handle
      */
-    void handle(List<T> list) throws Exception;
+    default void handle(List<T> list) throws Exception {
+
+    }
+
+    /**
+     * solve pool with more action when batch size equals 1
+     * @param t Object
+     * @throws Exception e
+     */
+    default void singleHandle(T t) throws Exception{
+
+    }
 }

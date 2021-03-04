@@ -2,7 +2,6 @@ package com.fate.pool.normal;
 
 import com.fate.pool.PoolFinalHandler;
 
-import javax.security.auth.Destroyable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.Map;
  * @author ydc
  * @date 2020/12/23.
  */
-public class CascadeNormalPoolFactory implements PoolFinalHandler, Destroyable {
+public class CascadeNormalPoolFactory implements PoolFinalHandler {
 
     private final int maxPoolSize;
 
@@ -78,7 +77,9 @@ public class CascadeNormalPoolFactory implements PoolFinalHandler, Destroyable {
 
     @Override
     public void destroy()  {
-        map.clear();
-        map = null;
+        if (map != null) {
+            map.clear();
+            map = null;
+        }
     }
 }

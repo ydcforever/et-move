@@ -4,7 +4,6 @@ import com.airline.account.model.et.EtUpl;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author ydc
  * @date 2020/12/2
  */
@@ -16,6 +15,7 @@ public interface EtUplService {
      *
      * @param logGroup 日志组
      * @param etUpl upl/iwb
+     * @return boolean
      */
-    void insertEtUplWithUpdate(String logGroup, EtUpl etUpl);
+    boolean insertEtUplWithUpdate(String logGroup, EtUpl etUpl);
 }

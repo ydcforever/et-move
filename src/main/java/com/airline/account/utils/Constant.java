@@ -16,7 +16,11 @@ public interface Constant {
 
     String ERROR_REF_DP2ET = "MOVE_REF_DP2ET";
 
+    String ERROR_REF_STATUS = "UPDATE_REF_STATUS";
+
     String ERROR_EXCHANGE2ET = "MOVE_EXCHANGE2ET";
+
+    String ERROR_EXCHANGE_STATUS = "UPDATE_EXCHANGE_STATUS";
 
     String ERROR_SAL = "MOVE_SAL";
 

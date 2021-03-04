@@ -33,7 +33,11 @@ public class NormalPool<T> extends AbstractNormalPool<T> {
 
     private void handle() throws Exception{
         try{
-            poolHandler.handle(pool);
+            if(single) {
+                singleHandle();
+            } else {
+                poolHandler.handle(pool);
+            }
         } finally {
             pool.clear();
         }

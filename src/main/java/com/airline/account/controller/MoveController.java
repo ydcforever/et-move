@@ -4,10 +4,10 @@ import com.airline.account.model.et.Relation;
 import com.airline.account.service.acca.*;
 import com.airline.account.service.move.LoadSourceService;
 import com.airline.account.service.move.MoveService;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.airline.account.utils.SingleMoveComponent;
 import com.fate.piece.PageHandler;
-import com.fate.pool.normal.CascadeSingleFactory;
+import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.fate.pool.normal.NormalPool;
 import com.fate.schedule.SteerableSchedule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,8 @@ import javax.annotation.Resource;
  * @date 2020/11/25
  */
 @RestController
-@RequestMapping("/et")
+@RequestMapping("/et-deprecated")
+@Deprecated
 public class MoveController {
 
     @Autowired
@@ -70,7 +71,7 @@ public class MoveController {
     @ResponseBody
     @SteerableSchedule(id = "ACCA_SAL_IP_D", cron = "0 0 0 * * ?")
     public void moveDip() {
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_D", "ACCA_SAL_IP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDipService);
@@ -85,7 +86,7 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_DP_D", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveDdp() {
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_D t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_D", "ACCA_SAL_DP_D", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveDdpService);
@@ -100,7 +101,7 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_IP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveMip() {
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_IP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_IP_M", "ACCA_SAL_IP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMipService);
@@ -115,7 +116,7 @@ public class MoveController {
     @SteerableSchedule(id = "ACCA_SAL_DP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveMdp() {
-        CascadeSingleFactory poolFactory = moveComponent.getSalPoolFactory();
+        CascadeNormalPoolFactory poolFactory = moveComponent.getSalPoolFactory();
         String sql = "select distinct t.issue_date from ACCA_SAL_DP_M t where t.source_name = ? order by t.issue_date";
         AllocateSource allocateSource = new AllocateSource(10000, "ACCA_SAL_DP_M", "ACCA_SAL_DP_M", sql);
         PageHandler pageHandler = moveComponent.createSalPageHandler(poolFactory, allocateSource, moveMdpService);
@@ -172,7 +173,7 @@ public class MoveController {
      * ACCA 国内退票 状态
      */
     @RequestMapping(value = "/moveRefDp.do", method = RequestMethod.POST)
-    @SteerableSchedule(id = "moveRefDp", cron = "0 0 0 * * ?")
+    @SteerableSchedule(id = "ACCA_REF_DP_M", cron = "0 0 0 * * ?")
     @ResponseBody
     public void moveRefDp() {
         NormalPool<Relation> normalPool = moveComponent.getRelationPool(1000, "ACCA_REF_DP_M");

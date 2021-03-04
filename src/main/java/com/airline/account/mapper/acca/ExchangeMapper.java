@@ -2,7 +2,8 @@ package com.airline.account.mapper.acca;
 
 import com.airline.account.model.acca.Sal;
 import com.airline.account.model.et.Relation;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,4 +39,13 @@ public interface ExchangeMapper {
      */
     Integer countExchangeByAllocate(AllocateSource allocateSource);
 
+
+    /**
+     * 国内改签原票日期
+     * @param tableName
+     * @param airline
+     * @param ticketNo
+     * @return
+     */
+    String getDpExchangeDate(@Param("tableName") String tableName, @Param("airline")String airline, @Param("ticketNo")String ticketNo);
 }

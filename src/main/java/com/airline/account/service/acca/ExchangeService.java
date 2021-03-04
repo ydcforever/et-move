@@ -19,4 +19,5 @@ public interface ExchangeService extends StatusPageHandler{
      * @return list of exchange relation
      */
     List<Relation> queryExchange(Sal primarySal);
+
 }

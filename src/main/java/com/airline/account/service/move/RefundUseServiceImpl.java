@@ -33,7 +33,8 @@ public class RefundUseServiceImpl implements RefundUseService {
     private MoveLogMapper moveLogMapper;
 
     @Override
-    public void insertRefundWithUpdate(String logGroup, Relation refund) {
+    public boolean insertRefundWithUpdate(String logGroup, Relation refund) {
+        boolean insertSuccess = true;
         try{
             jdbcTemplate.update(sqlInsertRefund, new PreparedStatementSetter() {
                 @Override
@@ -47,9 +48,11 @@ public class RefundUseServiceImpl implements RefundUseService {
         } catch (DuplicateKeyException ignore){
 
         } catch (Exception e) {
+            insertSuccess = false;
             String tktn = refund.getOperateDocumentCarrierIataNo() + refund.getOperateDocumentNo();
             MoveLog moveLog = new MoveLog(logGroup, tktn, e.getMessage());
             moveLogMapper.insertLog(moveLog);
         }
+        return insertSuccess;
     }
 }

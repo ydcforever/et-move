@@ -3,7 +3,7 @@ package com.airline.account.service.acca;
 import com.airline.account.mapper.acca.RfdDpMapper;
 import com.airline.account.model.acca.RfdDp;
 import com.airline.account.model.et.Relation;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
 import com.fate.pool.normal.NormalPool;

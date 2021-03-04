@@ -57,24 +57,24 @@
         <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="queryIwbByAllocate" resultMap="Iwb" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryIwbByAllocate" resultMap="Iwb" parameterType="com.airline.account.model.allocate.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select 
         <include refid="col"/>
         from ${tableName} t
         where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.TICKET_DATE = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.TICKET_DATE = #{issueDate}
         </if>
         <include refid="OraclePagingSuffix"/>
     </select>
 
-    <select id="countIwbByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="countIwbByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.model.allocate.AllocateSource">
         select count(*)
         from ${tableName} t
         where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.TICKET_DATE = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.TICKET_DATE = #{issueDate}
         </if>
     </select>
 

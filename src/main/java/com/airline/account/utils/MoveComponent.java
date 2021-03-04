@@ -3,12 +3,14 @@ package com.airline.account.utils;
 import com.airline.account.mapper.acca.SalMapper;
 import com.airline.account.mapper.et.MoveLogMapper;
 import com.airline.account.model.acca.Sal;
+import com.airline.account.model.allocate.AllocateSource;
 import com.airline.account.model.et.*;
 import com.airline.account.service.move.BatchService;
 import com.airline.account.service.move.MoveService;
 import com.airline.account.service.move.StatusService;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
+import com.fate.pool.PoolHandler;
 import com.fate.pool.normal.CascadeNormalPool;
 import com.fate.pool.normal.CascadeNormalPoolFactory;
 import com.fate.pool.normal.NormalPool;
@@ -20,13 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.airline.account.utils.MatchUtil.*;
+import static com.airline.account.utils.MatchUtil.getCnjTktString;
+import static com.airline.account.utils.MatchUtil.getTicket;
 
 /**
  * @author ydc
  * @date 2020/12/29.
  */
 @Component
+@Deprecated
 public class MoveComponent implements Constant {
 
     @Autowired
@@ -49,14 +53,18 @@ public class MoveComponent implements Constant {
      * @return 对象池
      */
     public NormalPool<Relation> getRelationPool(Integer batchSize, String poolName) {
-        return new NormalPool<>(batchSize, list -> {
-            try {
-                statusService.updateSegmentStatus(list);
-            } catch (Exception e) {
-                Relation relation = list.get(0);
-                String tktn = relation.getOperateDocumentCarrierIataNo() + relation.getOperateDocumentNo();
-                MoveLog log = new MoveLog(poolName, tktn, e.getMessage());
-                moveLogMapper.insertLog(log);
+        return new NormalPool<>(batchSize, new PoolHandler<Relation>() {
+
+            @Override
+            public void handle(List<Relation> list) throws Exception {
+                try {
+                    statusService.updateSegmentStatus(list);
+                } catch (Exception e) {
+                    Relation relation = list.get(0);
+                    String tktn = relation.getOperateDocumentCarrierIataNo() + relation.getOperateDocumentNo();
+                    MoveLog log = new MoveLog(poolName, tktn, e.getMessage());
+                    moveLogMapper.insertLog(log);
+                }
             }
         });
     }
@@ -88,48 +96,62 @@ public class MoveComponent implements Constant {
      */
     public CascadeNormalPoolFactory getSalPoolFactory(Integer ticketSize, Integer batchSize) {
         CascadeNormalPoolFactory poolFactory = new CascadeNormalPoolFactory(ticketSize);
-        CascadeNormalPool<Ticket> ticketPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertTicket(list);
-            } catch (Exception e) {
-                Ticket ticket = list.get(0);
-                String doc = ticket.getDocumentCarrierIataNo() + ticket.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_TICKET, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
+        CascadeNormalPool<Ticket> ticketPool = new CascadeNormalPool<>(batchSize, new PoolHandler<Ticket>() {
+
+            @Override
+            public void handle(List<Ticket> list) throws Exception {
+
+                try {
+                    batchService.insertTicket(list);
+                } catch (Exception e) {
+                    Ticket ticket = list.get(0);
+                    String doc = ticket.getDocumentCarrierIataNo() + ticket.getDocumentNo();
+                    MoveLog log = new MoveLog(POOL_KEY_TICKET, doc, e.getMessage());
+                    moveLogMapper.insertLog(log);
+                }
             }
         });
         poolFactory.addPool(POOL_KEY_TICKET, ticketPool);
 
-        CascadeNormalPool<Segment> segmentPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertSegment(list);
-            } catch (Exception e) {
-                Segment segment = list.get(0);
-                String doc = segment.getDocumentCarrierIataNo() + segment.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_SEGMENT, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
+        CascadeNormalPool<Segment> segmentPool = new CascadeNormalPool<>(batchSize, new PoolHandler<Segment>() {
+            @Override
+            public void handle(List<Segment> list) throws Exception {
+                try {
+                    batchService.insertSegment(list);
+                } catch (Exception e) {
+                    Segment segment = list.get(0);
+                    String doc = segment.getDocumentCarrierIataNo() + segment.getDocumentNo();
+                    MoveLog log = new MoveLog(POOL_KEY_SEGMENT, doc, e.getMessage());
+                    moveLogMapper.insertLog(log);
+                }
             }
         });
         poolFactory.addPool(POOL_KEY_SEGMENT, segmentPool);
 
-        CascadeNormalPool<Tax> taxPool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                batchService.insertTax(list);
-            } catch (Exception e) {
-                Tax tax = list.get(0);
-                String doc = tax.getDocumentCarrierIataNo() + tax.getDocumentNo();
-                MoveLog log = new MoveLog(POOL_KEY_TAX, doc, e.getMessage());
-                moveLogMapper.insertLog(log);
+        CascadeNormalPool<Tax> taxPool = new CascadeNormalPool<>(batchSize, new PoolHandler<Tax>() {
+            @Override
+            public void handle(List<Tax> list) throws Exception {
+                try {
+                    batchService.insertTax(list);
+                } catch (Exception e) {
+                    Tax tax = list.get(0);
+                    String doc = tax.getDocumentCarrierIataNo() + tax.getDocumentNo();
+                    MoveLog log = new MoveLog(POOL_KEY_TAX, doc, e.getMessage());
+                    moveLogMapper.insertLog(log);
+                }
             }
         });
         poolFactory.addPool(POOL_KEY_TAX, taxPool);
 
-        CascadeNormalPool<Relation> exchangePool = new CascadeNormalPool<>(batchSize, list -> {
-            try {
-                statusService.updateSegmentStatus(list);
-            } catch (Exception e) {
-                MoveLog log = new MoveLog(POOL_KEY_EXCHANGE, "", e.getMessage());
-                moveLogMapper.insertLog(log);
+        CascadeNormalPool<Relation> exchangePool = new CascadeNormalPool<>(batchSize, new PoolHandler<Relation>() {
+            @Override
+            public void handle(List<Relation> list) throws Exception {
+                try {
+                    statusService.updateSegmentStatus(list);
+                } catch (Exception e) {
+                    MoveLog log = new MoveLog(POOL_KEY_EXCHANGE, "", e.getMessage());
+                    moveLogMapper.insertLog(log);
+                }
             }
         });
         poolFactory.addPool(POOL_KEY_EXCHANGE, exchangePool);
@@ -137,13 +159,13 @@ public class MoveComponent implements Constant {
     }
 
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void move(CascadeNormalPoolFactory poolFactory, Sal primarySal, MoveService moveService, String sourceName){
+    public void move(CascadeNormalPoolFactory poolFactory, Sal primarySal, MoveService moveService, String sourceName) {
         List<Sal> salList = moveService.getSal(primarySal);
         String cnjTktString = getCnjTktString(salList);
         for (Sal s : salList) {
             Ticket ticket = getTicket(s, cnjTktString, sourceName);
             poolFactory.appendObject(POOL_KEY_TICKET, ticket);
-            addSeg(poolFactory, s);
+            PoolUtil.addSeg(poolFactory, s);
         }
         List<Tax> taxes = moveService.getTax(primarySal);
         poolFactory.appendObject(POOL_KEY_TAX, taxes);
@@ -169,60 +191,5 @@ public class MoveComponent implements Constant {
             MoveLog log = new MoveLog(ERROR_SAL, tktn, e.getMessage());
             moveLogMapper.insertLog(log);
         }
-    }
-
-    private static void addSeg(CascadeNormalPoolFactory factory, Sal sal) {
-        if (isNumber(sal.getCouponUseIndicator())) {
-            addNumberSeg(factory, sal);
-        } else {
-            addCharSeg(factory, sal);
-        }
-    }
-
-    /**
-     * 国内航段映射
-     */
-    private static void addCharSeg(CascadeNormalPoolFactory factory, Sal sal) {
-        String[] status = sal.getCouponUseIndicator().split("");
-        for (int i = 0, len = status.length; i < len; i++) {
-            if (!STATUS_VOID.equals(status[i])) {
-                if (i == 0) {
-                    Segment seg = buildSeg1(sal, status[i]);
-                    factory.appendObject(POOL_KEY_SEGMENT, seg);
-                } else if (i == 1) {
-                    Segment seg = buildSeg2(sal, status[i]);
-                    factory.appendObject(POOL_KEY_SEGMENT, seg);
-                } else if (i == 2) {
-                    Segment seg = buildSeg3(sal, status[i]);
-                    factory.appendObject(POOL_KEY_SEGMENT, seg);
-                } else if (i == 3) {
-                    Segment seg = buildSeg4(sal, status[i]);
-                    factory.appendObject(POOL_KEY_SEGMENT, seg);
-                }
-            }
-        }
-    }
-
-    private static void addNumberSeg(CascadeNormalPoolFactory factory, Sal sal) {
-        String[] status = sal.getCouponUseIndicator().split("");
-        for (String s : status) {
-            if ("1".equals(s)) {
-                Segment seg = buildSeg1(sal, STATUS_VALID);
-                factory.appendObject(POOL_KEY_SEGMENT, seg);
-            } else if ("2".equals(s)) {
-                Segment seg = buildSeg2(sal, STATUS_VALID);
-                factory.appendObject(POOL_KEY_SEGMENT, seg);
-            } else if ("3".equals(s)) {
-                Segment seg = buildSeg3(sal, STATUS_VALID);
-                factory.appendObject(POOL_KEY_SEGMENT, seg);
-            } else if ("4".equals(s)) {
-                Segment seg = buildSeg4(sal, STATUS_VALID);
-                factory.appendObject(POOL_KEY_SEGMENT, seg);
-            }
-        }
-    }
-
-    private static boolean isNumber(String str) {
-        return str.matches(".*[0-9]+.*");
     }
 }

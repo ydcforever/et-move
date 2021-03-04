@@ -15,6 +15,7 @@ public interface RefundUseService {
      *
      * @param logGroup 日志标识
      * @param refund 退票
+     * @return boolean
      */
-    void insertRefundWithUpdate(String logGroup, Relation refund);
+    boolean insertRefundWithUpdate(String logGroup, Relation refund);
 }

@@ -4,7 +4,7 @@ import com.airline.account.mapper.acca.ExchangeMapper;
 import com.airline.account.model.acca.Sal;
 import com.airline.account.model.et.Relation;
 import com.airline.account.service.move.ExchangeUseService;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
 import com.fate.pool.normal.NormalPool;
@@ -20,7 +20,7 @@ import static com.airline.account.utils.EtFormat.intFormat;
  * @date 2021/1/8.
  */
 @Service
-public class ExchangeServiceImpl implements ExchangeService {
+public class ExchangeServiceImpl implements ExchangeService, OperationService<Relation> {
 
     @Autowired
     private ExchangeMapper exchangeMapper;
@@ -45,8 +45,11 @@ public class ExchangeServiceImpl implements ExchangeService {
             public void callback(PagePiece pagePiece) {
                 List<Relation> exchanges = exchangeMapper.queryExchangeByAllocate(allocateSource);
                 for (Relation exchange : exchanges) {
-                    //插入改签关系
-                    exchangeUseService.insertExchangeWithUpdate(ERROR_EXCHANGE2ET, exchange);
+                    //插入改签关系，精细化切点
+                    boolean success = exchangeUseService.insertExchangeWithUpdate(ERROR_EXCHANGE2ET, exchange);
+                    if (success){
+                        completeInsert(exchange, "");
+                    }
                     String[] status = exchange.getCouponUseIndicator().split("");
                     for (String cpnNo : status) {
                         if (!COUPON_INVALID.equals(cpnNo)) {
@@ -63,5 +66,10 @@ public class ExchangeServiceImpl implements ExchangeService {
                 }
             }
         };
+    }
+
+    @Override
+    public void completeInsert(Relation exchange, String tableName) {
+
     }
 }

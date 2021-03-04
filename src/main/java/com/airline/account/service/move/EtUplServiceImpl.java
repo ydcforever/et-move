@@ -23,15 +23,18 @@ public class EtUplServiceImpl implements EtUplService {
     private MoveLogMapper moveLogMapper;
 
     @Override
-    public void insertEtUplWithUpdate(String logGroup, EtUpl etUpl) {
+    public boolean insertEtUplWithUpdate(String logGroup, EtUpl etUpl) {
+        boolean insertSuccess = true;
         try{
             etUplMapper.insertUpl(etUpl);
         } catch (DuplicateKeyException e){
             etUplMapper.updateUpl(etUpl);
         } catch (Exception e){
+            insertSuccess = false;
             String tktn = etUpl.getDocumentCarrierIataNo() + etUpl.getDocumentNo();
             MoveLog log = new MoveLog(logGroup, tktn, e.getMessage());
             moveLogMapper.insertLog(log);
         }
+        return insertSuccess;
     }
 }

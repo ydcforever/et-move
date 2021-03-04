@@ -3,7 +3,6 @@ package com.airline.account.utils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,10 +50,6 @@ public final class EtFormat implements Constant{
         }
     }
 
-    public static String issueDateFormat(String date){
-        return dateFormat(date, "yyyyMMdd");
-    }
-
     public static String fltDateFormat(String date) {
         return "99999999".equals(date) ? "30001230" : dateFormat(date, "yyyyMMdd");
     }
@@ -69,9 +64,9 @@ public final class EtFormat implements Constant{
             }
             Date dt = DateUtils.parseDate(date, a);
             return DateFormatUtils.format(dt, targetFormat);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(3000, Calendar.DECEMBER, 30);
+            calendar.set(3000, Calendar.DECEMBER, 31);
             return DateFormatUtils.format(calendar, targetFormat);
         }
     }

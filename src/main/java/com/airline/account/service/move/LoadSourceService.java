@@ -1,11 +1,12 @@
 package com.airline.account.service.move;
 
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.pool.PoolFinalHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author ydc
@@ -30,7 +31,17 @@ public interface LoadSourceService {
      * @param allocateSource 资源分配
      * @param pageHandler    分页处理
      */
+    @Deprecated
     void executeByDate(PoolFinalHandler finalHandler, AllocateSource allocateSource, PageHandler pageHandler);
+
+    /**
+     * 线程资源 --文件+日期
+     *
+     * @param allocateSource
+     * @return queue
+     */
+    @Deprecated
+    LinkedBlockingQueue<AllocateSource> getResourceByDate(AllocateSource allocateSource);
 
     /**
      * 获取要处理的资源文件

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.airline.account.mapper.allocate.StatisticMapper">
+    <insert id="statistic">
+        insert into MOVE_STATISTICS
+        (table_name, file_name, issue_date, total)
+        select #{tableName}, source_name, ${dateCol}, count(*)
+        from ${tableName} t
+        where source_name = #{fileName}
+        group by source_name, ${dateCol}
+    </insert>
+
+    <update id="beginPiece" parameterType="com.airline.account.model.allocate.AllocateSource">
+        update MOVE_STATISTICS t
+        set t.start_time = to_date(#{start} , 'yyyy-MM-dd hh24:mi:ss')
+        where t.file_name = #{fileName}
+        and t.issue_date = #{issueDate}
+    </update>
+
+    <update id="finishPiece" parameterType="com.airline.account.model.allocate.AllocateSource">
+        update MOVE_STATISTICS t
+        set
+        <if test='hasExecute ="N" and status = "Y"'>
+            t.has_execute = 'Y',
+        </if>
+        t.status = #{status},
+        t.end_time = to_date(#{end} , 'yyyy-MM-dd hh24:mi:ss')
+        where t.file_name = #{fileName}
+        and t.issue_date = #{issueDate}
+    </update>
+</mapper>

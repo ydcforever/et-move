@@ -4,7 +4,7 @@ import com.airline.account.mapper.acca.RefDpMapper;
 import com.airline.account.model.acca.RefDp;
 import com.airline.account.model.et.Relation;
 import com.airline.account.service.move.RefundUseService;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import com.fate.piece.PageHandler;
 import com.fate.piece.PagePiece;
 import com.fate.pool.normal.NormalPool;
@@ -46,7 +46,9 @@ public class RefServiceImpl implements RefService {
                             refDp.getRefundRelationNo(), STATUS_REFUND);
                     relation.setOperateIssueDate(dateFormat(refDp.getRefundDate(), "yyyy-MM-dd"));
                     relation.setCouponUseIndicator(refDp.getRefundRelationNo() + "");
+                    //精细化切点
                     refundUseService.insertRefundWithUpdate(ERROR_REF_DP2ET, relation);
+
                     try {
                         pool.beforeAppend();
                         pool.appendObject(relation);

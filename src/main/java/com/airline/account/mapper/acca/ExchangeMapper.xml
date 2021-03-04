@@ -21,6 +21,12 @@
         ORG_ISSUE_DATE
     </sql>
 
+    <select id="getDpExchangeDate" resultType="java.lang.String">
+        select issue_date
+          from ${tableName} t
+         where t.airline_3code = #{airline}
+           and t.ticket_no = #{ticketNo}
+    </select>
 
     <select id="queryExchange" resultMap="Relation" parameterType="com.airline.account.model.acca.Sal">
         select
@@ -29,24 +35,24 @@
         where t.CNJ_TICKET_NO = #{airline3code} || #{ticketNo}
     </select>
 
-    <select id="queryExchangeByAllocate" resultMap="Relation" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryExchangeByAllocate" resultMap="Relation" parameterType="com.airline.account.model.allocate.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select
         <include refid="col"/>
         from ITAX_AUDITOR_EXCHANGE t
         where t.ORI_SOURCE = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.issue_date = #{issueDate}
         </if>
         <include refid="OraclePagingSuffix"/>
     </select>
 
-    <select id="countExchangeByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="countExchangeByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.model.allocate.AllocateSource">
         select count(*)
         from ITAX_AUDITOR_EXCHANGE t
         where t.ORI_SOURCE = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.issue_date = #{issueDate}
         </if>
     </select>
 

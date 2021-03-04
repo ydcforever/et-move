@@ -15,6 +15,7 @@ public interface ExchangeUseService {
      *
      * @param logGroup 日志组
      * @param exchange 改签关系
+     * @return boolean
      */
-    void insertExchangeWithUpdate(String logGroup, Relation exchange);
+    boolean insertExchangeWithUpdate(String logGroup, Relation exchange);
 }

@@ -36,7 +36,7 @@ function TdComponent(object, clsName) {
     this.col = object.col;
     //指定宽度
     this.width = object.width;
-    //是否标红
+    //是否必填
     this.markStar = object.markStar;
     //初始化url
     this.initUrl = object.initUrl;

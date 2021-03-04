@@ -14,17 +14,17 @@ import java.util.Date;
 @Data
 public class MoveLog {
 
-    private String airlineCode;
+    private String executor;
 
-    private String firstTicketNo;
+    private String ticketNo;
 
     private String excp;
 
     private String createTime;
 
-    public MoveLog(String airlineCode, String firstTicketNo, String excp) {
-        this.airlineCode = airlineCode;
-        this.firstTicketNo = firstTicketNo;
+    public MoveLog(String executor, String ticketNo, String excp) {
+        this.executor = executor;
+        this.ticketNo = ticketNo;
         this.excp = StringUtils.isBlank(excp) ? "" : excp.length() > 2000 ? excp.substring(0, 1500) : excp;
         this.createTime = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
     }

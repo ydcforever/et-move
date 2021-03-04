@@ -22,15 +22,18 @@ public class ExchangeUseServiceImpl implements ExchangeUseService {
     private MoveLogMapper moveLogMapper;
 
     @Override
-    public void insertExchangeWithUpdate(String logGroup, Relation exchange) {
+    public boolean insertExchangeWithUpdate(String logGroup, Relation exchange) {
+        boolean insertSuccess = true;
         try{
             exchangeUseMapper.insertExchangeUse(exchange);
         } catch (DuplicateKeyException e) {
             exchangeUseMapper.updateExchangeUse(exchange);
         } catch (Exception e) {
+            insertSuccess = false;
             String tktn = exchange.getDocumentCarrierIataNo() + exchange.getDocumentNo();
             MoveLog moveLog = new MoveLog(logGroup, tktn, e.getMessage());
             moveLogMapper.insertLog(moveLog);
         }
+        return insertSuccess;
     }
 }

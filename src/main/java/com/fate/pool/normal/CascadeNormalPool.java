@@ -16,8 +16,12 @@ public class CascadeNormalPool<T> extends AbstractNormalPool<T> {
     public void finalHandle() throws Exception {
         if (pool.size() > 0) {
             try {
-                for (int i = 0, len = pool.size(); i < len; i += maxPoolSize) {
-                    poolHandler.handle(pool.subList(i, Math.min(i + maxPoolSize, len)));
+                if(single) {
+                    singleHandle();
+                } else {
+                    for (int i = 0, len = pool.size(); i < len; i += maxPoolSize) {
+                        poolHandler.handle(pool.subList(i, Math.min(i + maxPoolSize, len)));
+                    }
                 }
             } finally {
                 pool.clear();

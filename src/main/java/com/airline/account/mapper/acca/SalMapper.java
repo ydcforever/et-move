@@ -1,7 +1,7 @@
 package com.airline.account.mapper.acca;
 
 import com.airline.account.model.acca.Sal;
-import com.airline.account.utils.AllocateSource;
+import com.airline.account.model.allocate.AllocateSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

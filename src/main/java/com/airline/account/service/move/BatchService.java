@@ -11,6 +11,7 @@ import java.util.List;
  * @author ydc
  * @date 2020/12/23.
  */
+@Deprecated
 @Service
 public interface BatchService {
 

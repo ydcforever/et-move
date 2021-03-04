@@ -138,27 +138,26 @@
         <include refid="firstTicketClause"/>
     </select>
 
-
-    <select id="queryPrimaryByAllocate" resultMap="Sal" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryPrimaryByAllocate" resultMap="Sal" parameterType="com.airline.account.model.allocate.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         SELECT
         <include refid="showCol"/>
         FROM ${tableName} t
         WHERE t.source_name = #{fileName}
-        <if test="currentIssueDate != null">
-          and  t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+          and  t.issue_date = #{issueDate}
         </if>
         and t.cnj_no = 1
         order by t.issue_date, decode(t.sale_type, 'N', 1, 'E', 2, 3)
         <include refid="OraclePagingSuffix"/>
     </select>
 
-    <select id="countPrimaryByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="countPrimaryByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.model.allocate.AllocateSource">
         SELECT count(*)
         FROM ${tableName} t
         WHERE t.source_name = #{fileName}
-        <if test="currentIssueDate != null">
-          and  t.issue_date = #{currentIssueDate}
+        <if test="issueDate != null">
+          and  t.issue_date = #{issueDate}
         </if>
         and t.cnj_no = 1
     </select>

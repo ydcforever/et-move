@@ -2,26 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.airline.account.mapper.et.MoveLogMapper">
     <resultMap type="com.airline.account.model.et.MoveLog" id="MoveLog">
-        <result column="AIRLINE_CODE" property="airlineCode" jdbcType="VARCHAR"/>
-        <result column="FIRST_TICKET_NO" property="firstTicketNo" jdbcType="VARCHAR"/>
+        <result column="EXECUTOR" property="executor" jdbcType="VARCHAR"/>
+        <result column="TICKET_NO" property="ticketNo" jdbcType="VARCHAR"/>
         <result column="EXCP" property="excp" jdbcType="VARCHAR"/>
         <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR"/>
     </resultMap>
 
     <insert id="insertLog">
-        insert into ET_MOVE_ERROR
+        insert into MOVE_LOG
         (
-        AIRLINE_CODE,
-        FIRST_TICKET_NO,
-        EXCP,
-        CREATE_TIME
-        )
+        EXECUTOR,
+        TICKET_NO,
+        EXCP)
         values
         (
-        #{airlineCode, jdbcType=VARCHAR},
-        #{firstTicketNo, jdbcType=VARCHAR},
-        #{excp, jdbcType=VARCHAR},
-        #{createTime, jdbcType=VARCHAR}
-        )
+        #{executor, jdbcType=VARCHAR},
+        #{ticketNo, jdbcType=VARCHAR},
+        #{excp, jdbcType=VARCHAR})
     </insert>
 </mapper>

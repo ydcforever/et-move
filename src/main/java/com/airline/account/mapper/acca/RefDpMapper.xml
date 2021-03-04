@@ -28,23 +28,23 @@
         <result column="SOURCE_NAME" property="sourceName" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="queryRefDpByAllocate" resultMap="RefDp" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="queryRefDpByAllocate" resultMap="RefDp" parameterType="com.airline.account.model.allocate.AllocateSource">
         <include refid="OraclePagingPrefix"/>
         select REFUND_OWNER_COMPANY, REFUND_TICKET_NO, REFUND_RELATION_NO, REFUND_DATE
         from ACCA_REF_DP_M t
         where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.REFUND_DATE = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.REFUND_DATE = #{issueDate}
         </if>
         <include refid="OraclePagingSuffix"/>
     </select>
 
-    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.utils.AllocateSource">
+    <select id="countRefDpByAllocate" resultType="java.lang.Integer" parameterType="com.airline.account.model.allocate.AllocateSource">
         select count(*)
         from ACCA_REF_DP_M t
         where t.SOURCE_NAME = #{fileName}
-        <if test="currentIssueDate != null">
-            and t.REFUND_DATE = #{currentIssueDate}
+        <if test="issueDate != null">
+            and t.REFUND_DATE = #{issueDate}
         </if>
     </select>
 

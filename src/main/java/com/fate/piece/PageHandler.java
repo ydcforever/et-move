@@ -11,7 +11,9 @@ public interface PageHandler {
      *
      * @return all record
      */
-    Integer count();
+    default Integer count(){
+        return 0;
+    };
 
     /**
      * handle the page when source split by page

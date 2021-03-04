@@ -47,12 +47,16 @@ public class PagePiece {
         this.totalPage = new BigDecimal(total).divide(new BigDecimal(pageSize), 0, BigDecimal.ROUND_CEILING).intValue();
     }
 
-    public void setTotal(PageHandler pageHandler) {
-        Integer count = pageHandler.count();
-        setTotal(count);
+    public void allPageHandle(PageHandler pageHandler){
         for (int i = 1; i <= totalPage; i++) {
             this.page = i;
             pageHandler.callback(this);
         }
+    }
+
+    public void setTotal(PageHandler pageHandler) {
+        Integer count = pageHandler.count();
+        setTotal(count);
+        allPageHandle(pageHandler);
     }
 }
